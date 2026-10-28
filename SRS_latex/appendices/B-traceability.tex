@@ -1,0 +1,22 @@
+% =====================================================================
+\chapter{Requirements Traceability Matrix}\label{app:trace}
+% =====================================================================
+\begin{guidance}
+Every user need and risk must map to at least one requirement, and every requirement to at least one test case. Gaps in this table indicate missing requirements or tests.
+\end{guidance}
+
+\begin{longtable}{|L{1.8cm}|L{4.0cm}|L{2.4cm}|L{2.4cm}|L{2.0cm}|}
+\caption{Traceability matrix}\label{tab:trace}\\
+\hline
+\rowcolor{srshead}\sffamily\bfseries Req.\ ID & \sffamily\bfseries Title & \sffamily\bfseries Source & \sffamily\bfseries Test Case(s) & \sffamily\bfseries Status \\ \hline
+\endfirsthead
+\hline
+\rowcolor{srshead}\sffamily\bfseries Req.\ ID & \sffamily\bfseries Title & \sffamily\bfseries Source & \sffamily\bfseries Test Case(s) & \sffamily\bfseries Status \\ \hline
+\endhead
+FR-01  & User registration & UN-01       & TC-01 -- TC-03 & Proposed \\ \hline
+FR-02  & User login        & UN-01, R-02 & TC-04 -- TC-06 & Proposed \\ \hline
+FR-03  & Story title       & UN-02       & TC-07          & Proposed \\ \hline
+NFR-04 & Password hashing  & R-02        & TC-20          & Proposed \\ \hline
+NFR-05 & TLS encryption    & R-02        & TC-21          & Proposed \\ \hline
+NFR-06 & Daily backup      & R-01        & TC-22          & Proposed \\ \hline
+\end{longtable}

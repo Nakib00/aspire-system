@@ -1,0 +1,113 @@
+% =====================================================================
+\chapter{Requirements}\label{ch:req}
+% =====================================================================
+
+\section{Functional Requirements}\label{sec:fr}
+\begin{guidance}
+Write each functional requirement in User Story format with a confirmation part. Every confirmation must be testable. Group stories by module. ``Traces to'' links each story to a user need (UN) or risk (R).
+\end{guidance}
+
+\begin{table}[H]
+\centering
+\caption{Priority definitions}\label{tab:priority}
+\begin{tabularx}{\textwidth}{|L{2.2cm}|X|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries Priority & \sffamily\bfseries Meaning \\ \hline
+High   & Must be in the first release; the product fails without it. \\ \hline
+Medium & Should be in the first release; a workaround exists. \\ \hline
+Low    & Desirable; can be deferred to a later release. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------
+\subsection{Module 1: User Account Management}
+
+\begin{userstory}{FR-01}{User registration}{High}{UN-01}
+  \storyas{new user}
+  \storywant{to register with my phone number and a password}
+  \storyso{I can access the system's features}
+  \begin{confirmation}
+    \item Confirm that a user can register with a valid phone number and a password of at least 8 characters.
+    \item Confirm that registration with an already-registered phone number shows an error.
+    \item Confirm that an OTP is sent and the account is activated only after it is verified.
+  \end{confirmation}
+\end{userstory}
+
+\begin{userstory}{FR-02}{User login}{High}{UN-01, R-02}
+  \storyas{registered user}
+  \storywant{to log in with my credentials}
+  \storyso{I can use my account securely}
+  \begin{confirmation}
+    \item Confirm that valid credentials log the user in and open the dashboard.
+    \item Confirm that invalid credentials show a generic error message.
+    \item Confirm that the account is locked for 15 minutes after 5 consecutive failed attempts.
+  \end{confirmation}
+\end{userstory}
+
+% ---------------------------------------------------------------------
+\subsection{Module 2: Module Name}
+
+\begin{userstory}{FR-03}{Story title}{Medium}{UN-02}
+  \storyas{\textit{role}}
+  \storywant{\textit{to perform an action}}
+  \storyso{\textit{I get a benefit}}
+  \begin{confirmation}
+    \item Confirm that \ldots
+  \end{confirmation}
+\end{userstory}
+
+% =====================================================================
+\section{Non-Functional Requirements}\label{sec:nfr}
+\begin{guidance}
+State each requirement with a measurable target and a verification method (Test, Inspection, Analysis, Demonstration).
+\end{guidance}
+
+\subsection{Performance Requirements}
+\begin{table}[H]
+\centering
+\caption{Performance requirements}\label{tab:perf}
+\begin{tabularx}{\textwidth}{|L{1.6cm}|X|L{3cm}|L{2.2cm}|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries ID & \sffamily\bfseries Requirement & \sffamily\bfseries Target & \sffamily\bfseries Verification \\ \hline
+NFR-01 & API responses for core actions shall be fast. & $\leq$ 500\,ms (p95) & Load test \\ \hline
+NFR-02 & The system shall support concurrent users. & 500 concurrent & Load test \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Safety Requirements}
+\begin{table}[H]
+\centering
+\caption{Safety requirements}\label{tab:safety}
+\begin{tabularx}{\textwidth}{|L{1.6cm}|X|L{2.2cm}|L{2.2cm}|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries ID & \sffamily\bfseries Requirement & \sffamily\bfseries Related Risk & \sffamily\bfseries Verification \\ \hline
+NFR-03 & Describe the safety requirement. & R-01 & Inspection \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Security Requirements}
+\begin{table}[H]
+\centering
+\caption{Security requirements}\label{tab:security}
+\begin{tabularx}{\textwidth}{|L{1.6cm}|X|L{2.2cm}|L{2.2cm}|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries ID & \sffamily\bfseries Requirement & \sffamily\bfseries Related Risk & \sffamily\bfseries Verification \\ \hline
+NFR-04 & Passwords shall be stored using a salted hash (bcrypt/argon2). & R-02 & Inspection \\ \hline
+NFR-05 & All client--server traffic shall use TLS 1.2 or higher. & R-02 & Test \\ \hline
+NFR-06 & Data shall be backed up daily with 30-day retention. & R-01 & Demonstration \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Software Quality Attributes}
+\begin{table}[H]
+\centering
+\caption{Quality attributes}\label{tab:quality}
+\begin{tabularx}{\textwidth}{|L{1.6cm}|L{2.8cm}|X|L{2.2cm}|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries ID & \sffamily\bfseries Attribute & \sffamily\bfseries Requirement & \sffamily\bfseries Verification \\ \hline
+NFR-07 & Reliability     & 99\% uptime per month. & Analysis \\ \hline
+NFR-08 & Usability       & A new user completes registration in under 3 minutes. & Test \\ \hline
+NFR-09 & Maintainability & Modular code; documented API (OpenAPI). & Inspection \\ \hline
+NFR-10 & Portability     & Runs on Android and iOS from one codebase. & Demonstration \\ \hline
+\end{tabularx}
+\end{table}

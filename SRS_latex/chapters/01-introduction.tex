@@ -1,0 +1,220 @@
+% =====================================================================
+\chapter{Introduction}\label{ch:intro}
+% =====================================================================
+
+\section{Purpose}\label{sec:purpose}
+
+The purpose of this document is to describe the requirements of ASPIRE, a web-based
+system for managing after-school learning centers. In many after-school centers,
+student records, attendance, worksheets and monthly fees are still kept on paper or
+in separate Excel files. This makes it hard for the center to keep track of
+everything, and parents usually do not know how their child is doing until they
+visit the center.
+
+ASPIRE solves this problem by bringing all of this work into one system. The main
+owner (Super Admin) can manage all the centers from one place. Each center has its
+own Center Admin who handles students, teachers, parents and fees for that center.
+Teachers can upload worksheets, give assignments, check submissions and take
+attendance. Students can see their assignments and upload their work, and parents
+can check their child's progress, attendance and fee status from their own account.
+
+This document explains what the system will do and how it should work. Our team
+will use it as a guide while building and testing the system, so that everyone
+has the same understanding of what needs to be done.
+
+% ---------------------------------------------------------------------
+\section{Intended Audience}\label{sec:audience}
+
+This document is written for everyone who is involved in building, testing or
+using ASPIRE. Different people will read different parts of it, so the table
+below shows who the readers are and which parts are most useful for them.
+
+\begin{table}[H]
+\centering
+\caption{Intended audience}\label{tab:audience}
+\begin{tabularx}{\textwidth}{|L{3.8cm}|X|L{3.6cm}|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries Reader & \sffamily\bfseries Why they will read it & \sffamily\bfseries Most useful parts \\ \hline
+Developers (frontend and backend) & To understand what features they need to build and how each user role should work. & Chapter~\ref{ch:overall}, Chapter~\ref{ch:req} \\ \hline
+Testers & To make test cases from the confirmation points of each user story and check that the system works correctly. & Section~\ref{sec:fr}, Section~\ref{sec:nfr} \\ \hline
+Project Manager / Team Lead & To plan the work, divide tasks among team members and keep track of risks. & Section~\ref{sec:scope}, Section~\ref{sec:risk}, Appendix~\ref{app:trace} \\ \hline
+Course Instructor & To check and evaluate our project requirements. & Whole document \\ \hline
+Center Owners and Admins & To see if the system covers the needs of their after-school center before using it. & Section~\ref{sec:scope}, Section~\ref{sec:userneeds} \\ \hline
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{Intended Use}\label{sec:use}
+
+Each reader of this document will use it in a different way. The main uses are
+given below:
+
+\begin{itemize}
+  \item \textbf{Developers} will use this document as a guide while building the
+        system. Before starting any feature, they should read its user story and
+        make sure the feature works the way it is written here.
+  \item \textbf{Testers} will use the confirmation points (C1, C2, \ldots) under
+        each user story to make their test cases. Every confirmation point should
+        have at least one test case.
+  \item \textbf{The Project Manager / Team Lead} will use the requirement IDs and
+        priorities to decide which features to build first and to check the
+        progress of the team.
+  \item \textbf{The Course Instructor} will use this document to check whether our
+        requirements are clear, complete and testable.
+  \item \textbf{Center Owners and Admins} will read this document to check if the
+        system matches how their center actually works, and give feedback before
+        development is finished.
+\end{itemize}
+
+If any requirement changes during the project, this document will be updated
+and the change will be written in the Revision History table.
+
+% ---------------------------------------------------------------------
+\section{Product Scope}\label{sec:scope}
+
+\subsection{Product Overview}
+ASPIRE is a web-based management system for after-school learning centers. One
+organization can run many centers (branches) from the same system, and each
+center's data is kept separate from the others.
+
+At present, many after-school centers in Bangladesh manage their work using
+paper registers, notebooks and separate Excel sheets. Attendance is written on
+paper, worksheets are given by hand, and fees are tracked in a register. Because
+of this, it is hard for the owner to know what is happening in each branch, and
+parents have very little idea about their child's progress or fee status.
+
+ASPIRE brings all of this into one place. The system has five types of users:
+Super Admin, Center Admin, Teacher, Student and Parent. Each user gets their own
+dashboard with only the features they need. The system covers student enrollment,
+worksheets and levels, assignments and grading, attendance, monthly fees,
+reports and in-app notifications.
+
+\subsection{Objectives and Goals}
+\begin{enumerate}[label=\textbf{G\arabic*.}]
+  \item Allow the owner to manage all centers, staff and students from one system.
+  \item Replace paper-based attendance with a quick digital attendance system for teachers.
+  \item Let teachers upload worksheets, assign them to students and grade the
+        submitted work online.
+  \item Make monthly fee management easier by generating invoices automatically
+        and tracking paid, unpaid and overdue fees.
+  \item Give parents a simple way to check their child's progress, attendance
+        and fees at any time.
+  \item Provide reports so the owner and center admins can make better decisions.
+\end{enumerate}
+
+\subsection{Benefits}
+\begin{itemize}
+  \item \textbf{For the owner:} A clear view of all centers, including revenue,
+        attendance and student performance, without visiting each branch.
+  \item \textbf{For center admins:} Less paperwork and fewer mistakes in student
+        records and fee collection.
+  \item \textbf{For teachers:} Less time spent on attendance and paper
+        worksheets, and more time for teaching.
+  \item \textbf{For students:} All assignments and due dates in one place, so
+        they do not miss any work.
+  \item \textbf{For parents:} Better trust in the center, because they can see
+        their child's progress and payments by themselves.
+\end{itemize}
+
+\subsection{Out of Scope}
+The following features are \textbf{not} part of this version of ASPIRE:
+\begin{itemize}
+  \item Online fee payment through bKash, Nagad or cards. Payments are recorded
+        by the admin after the parent pays at the center.
+  \item A separate mobile app. The system is a web application, but it can be
+        used from a mobile browser.
+  \item Live online classes or video lessons.
+  \item SMS or email notifications. Only in-app notifications are included.
+  \item Self-registration by students or parents. Accounts are created by the admins.
+\end{itemize}
+
+\subsection{Objectives and Goals}
+\begin{enumerate}[label=\textbf{G\arabic*.}]
+  \item Allow the owner to manage all centers, staff and students from one
+        system, without needing separate files for each branch.
+  \item Replace paper attendance with digital attendance, so that a teacher can
+        mark attendance for a full class in less than 2 minutes.
+  \item Let teachers upload worksheets, assign them to students and grade the
+        submitted work online, so that no paper worksheets need to be collected.
+  \item Generate monthly fee invoices for all students of a center with one
+        click, and show paid, unpaid and overdue fees clearly.
+  \item Give parents 24/7 access to their child's progress, attendance and fee
+        status from their own account.
+  \item Provide reports on revenue, attendance and student performance, so the
+        owner and center admins can check how each center is doing at any time.
+\end{enumerate}
+
+\subsection{Benefits}
+ASPIRE supports the business goals of an after-school center in the following ways:
+
+\begin{itemize}
+  \item \textbf{Lower running cost:} Paper registers, printed worksheets and manual
+        record keeping take a lot of time and money. With ASPIRE, most of this work
+        is done online, so the center needs less paper and less admin staff time.
+
+  \item \textbf{Better fee collection:} The system generates monthly invoices
+        automatically and shows which fees are unpaid or overdue. This helps the
+        center follow up on late payments quickly, so less money is lost.
+
+  \item \textbf{Easy to open new branches:} The owner can add a new center and its
+        admin from the same system. No new software or setup is needed, which makes
+        it easier to grow the business to more locations.
+
+  \item \textbf{More trust from parents:} Parents can see their child's progress,
+        attendance and fees by themselves. When parents trust the center, they are
+        more likely to keep their child enrolled and recommend the center to others.
+
+  \item \textbf{Better decisions:} Reports on revenue, attendance and student
+        performance help the owner find weak centers or problems early, instead of
+        finding out at the end of the month.
+\end{itemize}
+
+\subsection{Out of Scope}
+The following features are \textbf{not} included in this version of ASPIRE. They
+may be added in future versions:
+
+\begin{itemize}
+  \item \textbf{Online fee payment:} Parents cannot pay through bKash, Nagad or
+        cards inside the system. The admin records the payment after the parent
+        pays at the center.
+  \item \textbf{Mobile app:} There is no separate Android or iOS app. ASPIRE is a
+        web application, but it can be opened from a mobile browser.
+  \item \textbf{Live classes:} The system does not support live online classes or
+        video lessons.
+  \item \textbf{SMS and email alerts:} Only in-app notifications are available.
+  \item \textbf{Self-registration:} Students and parents cannot create their own
+        accounts. All accounts are created by the Super Admin or Center Admin.
+  \item \textbf{Parent submission:} Parents can view and download their child's
+        work, but cannot submit assignments for them.
+\end{itemize}
+% ---------------------------------------------------------------------
+\section{Risk Definitions}\label{sec:risk}
+
+Before building the system, we listed the main things that could go wrong.
+For each risk, we gave a likelihood (how likely it is to happen) and an impact
+(how much damage it can cause). The last column shows which requirements in
+Chapter~\ref{ch:req} are written to reduce that risk.
+
+\begin{longtable}{|L{1.2cm}|L{5.0cm}|L{1.8cm}|L{1.4cm}|L{3.3cm}|}
+\caption{Risk register}\label{tab:risk}\\
+\hline
+\rowcolor{srshead}\sffamily\bfseries ID & \sffamily\bfseries Risk Description & \sffamily\bfseries Likelihood & \sffamily\bfseries Impact & \sffamily\bfseries Mitigated By \\ \hline
+\endfirsthead
+\hline
+\rowcolor{srshead}\sffamily\bfseries ID & \sffamily\bfseries Risk Description & \sffamily\bfseries Likelihood & \sffamily\bfseries Impact & \sffamily\bfseries Mitigated By \\ \hline
+\endhead
+R-01 & Student, fee or attendance data is lost because the server crashes or the database gets damaged. & Low & High & NFR-03 \\ \hline
+R-02 & Someone guesses or steals a user's password and logs into their account. & Medium & High & FR-01, NFR-04, NFR-05, NFR-06 \\ \hline
+R-03 & A user sees data they should not see, for example a Center Admin seeing another center's students, or a parent seeing another child's records. & Medium & High & FR-22 \\ \hline
+R-04 & Monthly fees are generated twice for the same student, or a payment is recorded against the wrong invoice. & Medium & High & FR-15 \\ \hline
+R-05 & A teacher marks attendance wrongly and it cannot be corrected, so parents get wrong information. & Medium & Medium & FR-13 \\ \hline
+R-06 & Students upload very large files or wrong file types, which fills up the server storage or causes errors. & High & Medium & FR-11, NFR-07 \\ \hline
+R-07 & An admin deletes a center, student or teacher by mistake, and all related records are lost. & Medium & High & NFR-10 \\ \hline
+R-08 & The system is very slow or does not load on weak mobile internet, which is common in Bangladesh. & High & Medium & NFR-01, NFR-02 \\ \hline
+R-09 & The server goes down during busy hours, such as at month end when fees are collected. & Low & High & NFR-08 \\ \hline
+R-10 & Parents and some teachers are not comfortable with technology and find the system hard to use. & Medium & Medium & NFR-09 \\ \hline
+\end{longtable}
+
+\noindent\textbf{Likelihood / Impact scale:} \textbf{Low} = unlikely or minor effect,
+\textbf{Medium} = may happen or causes some trouble, \textbf{High} = likely to happen
+or causes serious loss of data, money or trust.

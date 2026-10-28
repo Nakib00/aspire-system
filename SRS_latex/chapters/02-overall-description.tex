@@ -1,0 +1,91 @@
+% =====================================================================
+\chapter{Overall Description}\label{ch:overall}
+% =====================================================================
+\begin{guidance}
+Describe what you will build. Is it a new product, an update to an existing product, or an add-on? Explain why you are building it and who it is for. Describe how the software interacts with hardware or other software.
+\end{guidance}
+
+\textbf{Product perspective:} \theproject{} is a \emph{new / updated / add-on} product that \ldots
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox[c][4cm][c]{0.8\textwidth}{\centering\sffamily\color{srsgray}
+    System context diagram goes here}}
+  % Replace the box above with:
+  % \includegraphics[width=0.85\textwidth]{context.png}
+  \caption{System context diagram}\label{fig:context}
+\end{figure}
+
+% ---------------------------------------------------------------------
+\section{User Classes and Characteristics}\label{sec:userclasses}
+\begin{guidance}
+Define who will use the product and how. Include primary and secondary users, and a separate buyer if the buyer is not a user.
+\end{guidance}
+
+\begin{table}[H]
+\centering
+\caption{User classes}\label{tab:userclasses}
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.2cm}|X|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries User Class & \sffamily\bfseries Type & \sffamily\bfseries Characteristics \\ \hline
+User class 1 & Primary   & Frequency of use, technical expertise, key tasks. \\ \hline
+User class 2 & Secondary & \\ \hline
+Administrator & Secondary & \\ \hline
+Buyer / Client & Non-user & Purchases or sponsors the product. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{User Needs}\label{sec:userneeds}
+\begin{table}[H]
+\centering
+\caption{User needs}\label{tab:userneeds}
+\begin{tabularx}{\textwidth}{|L{1.5cm}|L{3cm}|X|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries ID & \sffamily\bfseries User Class & \sffamily\bfseries Need \\ \hline
+UN-01 & User class 1 & State the need in the user's own terms. \\ \hline
+UN-02 & User class 2 & \\ \hline
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{Operating Environment}\label{sec:env}
+\begin{table}[H]
+\centering
+\caption{Operating environment}\label{tab:env}
+\begin{tabularx}{\textwidth}{|L{3.5cm}|X|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries Component & \sffamily\bfseries Specification \\ \hline
+Hardware          & Devices, sensors, embedded platforms. \\ \hline
+Client platforms  & e.g.\ Android 10+, iOS 15+, latest Chrome / Firefox / Safari. \\ \hline
+Server            & e.g.\ Linux VPS, Node.js 20 LTS, PostgreSQL 16. \\ \hline
+Third-party services & Payment gateway, SMS, maps, cloud storage. \\ \hline
+Network           & Minimum connectivity requirements. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{Constraints}\label{sec:constraints}
+\begin{enumerate}[label=\textbf{CON-\arabic*}, leftmargin=4em]
+  \item \textbf{Schedule:} The system shall be delivered by DD/MM/YYYY.
+  \item \textbf{Budget:} \ldots
+  \item \textbf{Technology:} \ldots
+  \item \textbf{Regulatory:} \ldots
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\section{Assumptions}\label{sec:assumptions}
+\begin{guidance}
+List factors that could affect your ability to fulfil the requirements, and assumptions that could turn out to be false.
+\end{guidance}
+
+\begin{table}[H]
+\centering
+\caption{Assumptions}\label{tab:assumptions}
+\begin{tabularx}{\textwidth}{|L{1.5cm}|X|X|}
+\hline
+\rowcolor{srshead}\sffamily\bfseries ID & \sffamily\bfseries Assumption & \sffamily\bfseries Impact if False \\ \hline
+A-01 & Users have a smartphone with internet access. & Offline / SMS mode required. \\ \hline
+A-02 & & \\ \hline
+\end{tabularx}
+\end{table}

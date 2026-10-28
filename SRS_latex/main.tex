@@ -1,0 +1,50 @@
+% =====================================================================
+%  SOFTWARE REQUIREMENTS SPECIFICATION — main file
+%  Compile with pdfLaTeX (Overleaf default). Edit metadata below.
+%  Guidance boxes (light blue, italic) explain each section — delete
+%  them as you write, or hide them all with \showguidancefalse.
+% =====================================================================
+\documentclass{srsdocument}
+
+% ---------------- Metadata (EDIT) ----------------
+\projectname{ASPIRE: After-School Program Integrated Resource \& Education System}
+\docid{SRS-ASPIRE-001}
+\docversion{1.0}
+\docstatus{Draft}                    % Draft / In Review / Approved
+\organization{Independent university bangladesh}
+\preparedby{Nakibul Islam (2632700) \\
+            Shariar Nazim Joy (2210891) \\
+            Azmann Hasan Shayanna (2210808) \\
+            Md. Ataur Rahman (2311451) \\
+            Farhana Ahmed (2312079)}
+\preparedfor{Course Code - SE451}
+\date{\today}
+% \logo{logo.png}                    % put logo.png in assets/
+
+% Toggle guidance boxes on/off
+\newif\ifshowguidance \showguidancetrue
+\let\oldguidance\guidance \let\endoldguidance\endguidance
+\renewenvironment{guidance}
+  {\ifshowguidance\oldguidance\else\setbox0\vbox\bgroup\fi}
+  {\ifshowguidance\endoldguidance\else\egroup\fi}
+
+\begin{document}
+
+\maketitle
+
+\pagenumbering{roman}
+\input{prelims/document-control}
+\tableofcontents
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+
+\input{chapters/01-introduction}
+\input{chapters/02-overall-description}
+\input{chapters/03-requirements}
+
+\appendix
+\input{appendices/A-glossary}
+\input{appendices/B-traceability}
+
+\end{document}
