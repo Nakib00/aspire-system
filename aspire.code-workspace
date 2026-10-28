@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "name": "ASPIRE App",
+      "path": "."
+    },
+    {
+      "name": "ASPIRE Wiki",
+      "path": "../aspire-system.wiki"
+    }
+  ],
+  "settings": {}
+}
