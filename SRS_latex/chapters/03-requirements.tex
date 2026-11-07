@@ -55,6 +55,104 @@ Low    & Desirable; can be deferred to a later release. \\ \hline
     \item Confirm that \ldots
   \end{confirmation}
 \end{userstory}
+% =====================================================================
+% Parent module (Farhana). Paste this block into SRS_latex/chapters/03-requirements.tex
+% right after the last \subsection{Module ...} and before \section{Non-Functional Requirements}.
+% FR-P1..FR-P7 are temporary IDs: renumber them when all modules are merged.
+%
+% Also add these rows to the user needs table in chapters/02-overall-description.tex:
+%   UN-P1 & Parent & I want to see at a glance how my child is doing. \\ \hline
+%   UN-P2 & Parent & I want to understand my child's marks and the teacher's feedback. \\ \hline
+%   UN-P3 & Parent & I want to know if my child attends class and completes homework. \\ \hline
+%   UN-P4 & Parent & I want to know what fee is due and to have proof of payment. \\ \hline
+%   UN-P5 & Parent & I want to be notified about my child's activities without asking. \\ \hline
+% =====================================================================
+
+% ---------------------------------------------------------------------
+\subsection{Parent Module}
+The parent has read-only access to the data of the linked children.
+
+\begin{userstory}{FR-P1}{Login and Dashboard}{High}{UN-P1, R-02, R-03}
+  \storyas{parent}
+  \storywant{to log in and see a dashboard for my child (or children)}
+  \storyso{I can quickly see how they are doing}
+  \begin{confirmation}
+    \item Confirm that the parent logs in with email and password (the common login rules apply).
+    \item Confirm that if more than one child is linked, the parent can switch between children from the dashboard.
+    \item Confirm that the dashboard shows each child's attendance rate, pending assignments, latest grade, outstanding fees and recent notifications.
+    \item Confirm that a parent with no linked child sees a message to contact the center.
+  \end{confirmation}
+\end{userstory}
+
+\begin{userstory}{FR-P2}{View Child Progress}{High}{UN-P2, R-03}
+  \storyas{parent}
+  \storywant{to see my child's marks, level progress and teacher feedback}
+  \storyso{I can understand how my child is performing in each subject}
+  \begin{confirmation}
+    \item Confirm that the parent can view results per subject and per assessment only after the teacher has published them. Unpublished grades show ``Unpublished''.
+    \item Confirm that the parent can see the grade breakdown by category (Homework, Quizzes, Exams) and the overall progress bar.
+    \item Confirm that the parent can read the teacher's feedback on assignments and results.
+    \item Confirm that the parent can see a summary of overall performance, such as average marks and completed versus missed tasks.
+  \end{confirmation}
+\end{userstory}
+
+\begin{userstory}{FR-P3}{View Child Attendance}{High}{UN-P3, R-05}
+  \storyas{parent}
+  \storywant{to see my child's attendance record}
+  \storyso{I know if my child is missing classes}
+  \begin{confirmation}
+    \item Confirm that the parent can view attendance by date, course and status (Present, Absent, Late, Excused).
+    \item Confirm that the parent can see the attendance percentage and filter by date range.
+    \item Confirm that low attendance is highlighted visibly.
+    \item Confirm that attendance is read-only for the parent.
+  \end{confirmation}
+\end{userstory}
+
+\begin{userstory}{FR-P4}{Track Assignment Status}{Medium}{UN-P3}
+  \storyas{parent}
+  \storywant{to see my child's assignments and their status}
+  \storyso{I can make sure homework is completed on time}
+  \begin{confirmation}
+    \item Confirm that the parent sees each assignment's course, title, due date, marks and status (Pending, Submitted, Overdue).
+    \item Confirm that overdue assignments are displayed in a separate, highlighted area, and the parent receives a notification when an assignment becomes overdue.
+    \item Confirm that draft assignments are never visible.
+    \item Confirm that the parent can view but cannot submit or edit anything for the child.
+  \end{confirmation}
+\end{userstory}
+
+\begin{userstory}{FR-P5}{View Fee Invoices}{High}{UN-P4, R-04}
+  \storyas{parent}
+  \storywant{to see my child's fee invoices}
+  \storyso{I know how much to pay and by when}
+  \begin{confirmation}
+    \item Confirm that the parent can see each invoice with invoice ID, course, billing period, total fee, discount, amount payable and due date.
+    \item Confirm that the parent can view the invoice status (Paid, Partially Paid, Due, Overdue) and download an invoice as a PDF.
+    \item Confirm that the parent can see only the invoices of his or her own linked children.
+  \end{confirmation}
+\end{userstory}
+
+\begin{userstory}{FR-P6}{View Payment Records}{Medium}{UN-P4, R-04}
+  \storyas{parent}
+  \storywant{to see my payment history and receipts}
+  \storyso{I can verify what I have paid and what is still due}
+  \begin{confirmation}
+    \item Confirm that the parent can see payment date, amount, method, transaction ID and remaining balance for each payment.
+    \item Confirm that partial payments are shown with the updated outstanding balance.
+    \item Confirm that the parent can download a receipt for any recorded payment.
+    \item Confirm that the parent cannot edit or delete payment records.
+  \end{confirmation}
+\end{userstory}
+
+\begin{userstory}{FR-P7}{Receive Notifications}{Medium}{UN-P5, R-10}
+  \storyas{parent}
+  \storywant{to get notifications about my child's activities}
+  \storyso{I do not miss important updates}
+  \begin{confirmation}
+    \item Confirm that the parent is notified of absence, overdue assignment, newly published grade or feedback, new invoice, upcoming due date, payment recorded and teacher or center announcements.
+    \item Confirm that the parent can see a notification list, mark items as read and filter by type.
+    \item Confirm that the parent can choose which notification types to receive (in-app or email).
+  \end{confirmation}
+\end{userstory}
 
 % =====================================================================
 \section{Non-Functional Requirements}\label{sec:nfr}
