@@ -21,6 +21,10 @@ const icons = {
   menu: <path d="M4 7h16M4 12h16M4 17h16"/>,
   shield: <><path d="M12 3 4 6v5c0 5 3.2 8 8 10 4.8-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></>,
   chevron: <path d="m9 18 6-6-6-6"/>,
+  cap: <><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M22 9v6"/></>,
+  book: <><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 7h6"/></>,
+  trash: <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>,
+  family: <><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M2 20v-1a6 6 0 0 1 12 0v1M14.5 15a4.5 4.5 0 0 1 7.5 3.5V20"/></>,
   person: <><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></>,
 }
 

@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-#[Fillable(['name', 'email', 'password', 'role', 'center_id', 'active', 'phone', 'designation', 'last_login_at'])]
+#[Fillable(['name', 'email', 'password', 'role', 'center_id', 'active', 'phone', 'designation', 'last_login_at', 'code', 'gender', 'date_of_birth', 'address', 'school_name', 'grade_level', 'qualification', 'joined_on', 'notes'])]
 #[Hidden(['password', 'remember_token', 'token_version'])]
 class User extends Authenticatable implements JWTSubject
 {
@@ -35,12 +35,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function children()
     {
-        return $this->belongsToMany(User::class, 'parent_student', 'parent_id', 'student_id');
+        return $this->belongsToMany(User::class, 'parent_student', 'parent_id', 'student_id')->withPivot('relationship');
     }
 
     public function parents()
     {
-        return $this->belongsToMany(User::class, 'parent_student', 'student_id', 'parent_id');
+        return $this->belongsToMany(User::class, 'parent_student', 'student_id', 'parent_id')->withPivot('relationship');
     }
 
     public function studentSections()
@@ -65,6 +65,8 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
             'active' => 'boolean',
             'last_login_at' => 'datetime',
+            'date_of_birth' => 'date:Y-m-d',
+            'joined_on' => 'date:Y-m-d',
         ];
     }
 }

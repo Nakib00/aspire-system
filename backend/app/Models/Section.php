@@ -8,6 +8,16 @@ class Section extends Model
 {
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return ['days' => 'array', 'capacity' => 'integer', 'starts_on' => 'date:Y-m-d', 'ends_on' => 'date:Y-m-d'];
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
     public function center()
     {
         return $this->belongsTo(Center::class);

@@ -24,7 +24,7 @@ class AuthenticateApiToken
             $user = null;
             $version = null;
         }
-        if (! $user || ! $user->active || ($user->role === 'center_admin' && ! $user->center_id) || ! is_int($version) || $version !== (int) $user->token_version) {
+        if (! $user || ! $user->active || ($user->role !== 'super_admin' && ! $user->center_id) || ! is_int($version) || $version !== (int) $user->token_version) {
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
         $request->setUserResolver(fn () => $user);
