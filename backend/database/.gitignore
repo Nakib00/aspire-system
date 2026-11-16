@@ -1,1 +1,2 @@
 *.sqlite*
+!aspire-template.sqlite
