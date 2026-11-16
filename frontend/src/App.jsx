@@ -1,86 +1,341 @@
-﻿import { useCallback, useEffect, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useState } from 'react'
 import './App.css'
+import { formatDate, formatHours, formatRelative, getAll, request, DAYS } from './api'
+import { AdminForm, CenterForm } from './Forms'
+import Login from './Login'
+import { Avatar, Brand, ConfirmDialog, Empty, Icon, Modal, Skeleton, StatusBadge, Toast } from './ui'
 
-const currentYear = new Date().getFullYear()
+const NAV = [
+  ['overview', 'overview', 'Overview'],
+  ['centers', 'centers', 'Centers'],
+  ['admins', 'users', 'Center admins'],
+]
 
-const icons = {
-  overview: <><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
-  centers: <><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5M9 9h.01M15 9h.01M9 12h.01M15 12h.01"/></>,
-  users: <><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v1"/></>,
-  arrow: <path d="M5 12h14m-6-6 6 6-6 6"/>,
-  plus: <path d="M12 5v14M5 12h14"/>,
-  search: <><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></>,
-  logout: <><path d="M10 17v3H4V4h6v3M14 8l4 4-4 4M8 12h10"/></>,
-  close: <path d="M5 5l14 14M19 5 5 19"/>,
-  edit: <><path d="m4 20 4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16zM14 7l3 3"/></>,
-  check: <path d="m5 12 4 4L19 6"/>,
-  location: <><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></>,
-  shield: <><path d="M12 3 4 6v5c0 5 3 8 8 10 5-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></>,
-  chevron: <path d="m9 18 6-6-6-6"/>,
-  menu: <path d="M4 6h16M4 12h16M4 18h16"/>,
-}
-function Icon({ name, size = 20, className = '' }) { return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{icons[name]}</svg> }
-function Brand({ light = false }) { return <div className={`brand ${light ? 'brand-light' : ''}`}><div className="brand-mark"><span>✳</span></div><div><strong>aspire<span>.</span></strong><small>LEARNING, CONNECTED</small></div></div> }
+const centerAddress = (c) => [c.address, c.city].filter(Boolean).join(', ')
+const matches = (text, query) => text.toLowerCase().includes(query.trim().toLowerCase())
 
-const apiBase = import.meta.env.VITE_API_URL || '/api/v1'
-async function request(path, { token, method = 'GET', body } = {}) {
-  let response
-  try { response = await fetch(`${apiBase}${path}`, { method, headers: { Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) }) }
-  catch { throw new Error('Unable to reach the server. Make sure the backend is running and try again.') }
-  const data = await response.json().catch(() => ({}))
-  if (!response.ok) { const message = data.errors ? Object.values(data.errors).flat().join(' ') : data.message; const error = new Error(message || 'Something went wrong. Please try again.'); error.status = response.status; throw error }
-  return data
-}
-async function getAll(path, token) {
-  let page = 1; let last = 1; const items = []
-  while (page <= last) { const result = await request(`${path}?page=${page}`, { token }); items.push(...result.data); last = result.last_page || 1; page += 1 }
-  return items
-}
-function initials(name = '') { return name.trim().split(/\s+/).slice(0, 2).map(x => x[0]).join('').toUpperCase() || 'A' }
-
-function Login({ onLogin }) {
-  const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [error, setError] = useState(''); const [busy, setBusy] = useState(false); const [show, setShow] = useState(false)
-  async function submit(event) { event.preventDefault(); setError(''); setBusy(true); try { const data = await request('/login', { method: 'POST', body: { email, password } }); if (data.user.role !== 'super_admin') { await request('/logout', { method: 'POST', token: data.token }).catch(() => {}); throw new Error('This workspace is available to super admins. Your role dashboard is coming soon.') } onLogin(data) } catch (err) { setError(err.message) } finally { setBusy(false) } }
-  return <div className="login-layout"><section className="login-story"><Brand light/><div className="story-content"><span className="eyebrow light-eyebrow"><span className="eyebrow-dot"/> A LITTLE MORE POSSIBLE</span><h1>Growing together,<br/><em>every step of the way.</em></h1><p>A thoughtful space to bring your learning community together. Manage your centers, people, and progress in one place.</p><div className="story-visual" aria-hidden="true"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="visual-card visual-card-one"><span className="visual-icon">✳</span><div><b>Better together</b><small>Every learner matters</small></div></div><div className="visual-card visual-card-two"><span className="visual-dot"/><div><b>Room to grow</b><small>For every community</small></div></div><div className="visual-flower">✳</div><span className="visual-spark spark-one">✦</span><span className="visual-spark spark-two">✧</span></div></div><div className="story-footer">A SPACE FOR EVERY POSSIBILITY <span>✳</span></div></section><section className="login-panel"><div className="login-mobile-brand"><Brand/></div><div className="login-form-wrap"><div className="login-icon"><Icon name="shield" size={22}/></div><span className="section-kicker">WELCOME TO ASPIRE</span><h2>Good to see you<span className="accent">.</span></h2><p className="login-intro">Sign in to your account to continue to your workspace.</p><form onSubmit={submit} className="login-form"><label>Email address<input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="username" required/></label><label>Password<div className="password-field"><input type={show ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" autoComplete="current-password" required/><button type="button" onClick={() => setShow(!show)}>{show ? 'Hide' : 'Show'}</button></div></label>{error && <div className="alert error" role="alert">{error}</div>}<button className="btn btn-primary login-submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign in to workspace'} <Icon name="arrow" size={18}/></button></form><div className="login-help"><Icon name="shield" size={16}/><span>Having trouble signing in? Contact your administrator for help.</span></div></div><div className="login-bottom">© {currentYear} ASPIRE <span>Made for brighter futures.</span></div></section></div>
+function PageHeader({ title, text, action }) {
+  return (
+    <div className="page-header">
+      <div><h1>{title}</h1><p>{text}</p></div>
+      {action}
+    </div>
+  )
 }
 
-function Modal({ title, subtitle, onClose, children }) { useEffect(() => { function key(e) { if (e.key === 'Escape') onClose() } window.addEventListener('keydown', key); return () => window.removeEventListener('keydown', key) }, [onClose]); return <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) onClose() }}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal-header"><div><span className="section-kicker">ASPIRE WORKSPACE</span><h2 id="modal-title">{title}</h2><p>{subtitle}</p></div><button className="icon-button" onClick={onClose} aria-label="Close"><Icon name="close"/></button></div>{children}</section></div> }
-function Field({ label, children, hint }) { return <label className="field">{label}{children}{hint && <small>{hint}</small>}</label> }
-function CenterForm({ center, onClose, onSave }) {
-  const [form, setForm] = useState({ name: center?.name || '', address: center?.address || '', city: center?.city || '', phone: center?.phone || '', status: center?.status || 'active' }); const [busy, setBusy] = useState(false); const [error, setError] = useState('')
-  const change = e => setForm({ ...form, [e.target.name]: e.target.value })
-  async function submit(e) { e.preventDefault(); setBusy(true); setError(''); try { await onSave(form); onClose() } catch (err) { setError(err.message) } finally { setBusy(false) } }
-  return <Modal title={center ? 'Edit center' : 'Add a new center'} subtitle="Give your learning community a place to grow." onClose={onClose}><form onSubmit={submit} className="modal-form"><Field label="Center name"><input name="name" value={form.name} onChange={change} placeholder="e.g. Dhanmondi Learning Center" required maxLength="255" autoFocus/></Field><Field label="Address"><input name="address" value={form.address} onChange={change} placeholder="Street address" required maxLength="255"/></Field><div className="form-grid"><Field label="City"><input name="city" value={form.city} onChange={change} placeholder="e.g. Dhaka" maxLength="255"/></Field><Field label="Phone"><input name="phone" value={form.phone} onChange={change} placeholder="Contact number" maxLength="40"/></Field></div><Field label="Status"><select name="status" value={form.status} onChange={change}><option value="active">Active</option><option value="inactive">Inactive</option></select></Field>{error && <div className="alert error" role="alert">{error}</div>}<div className="modal-actions"><button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button><button className="btn btn-primary" disabled={busy}>{busy ? 'Saving…' : center ? 'Save changes' : 'Create center'} <Icon name="arrow" size={17}/></button></div></form></Modal>
+function Stat({ icon, label, value, note, tone, onClick }) {
+  return (
+    <button className="stat" onClick={onClick}>
+      <span className={`stat-icon tone-${tone}`}><Icon name={icon} /></span>
+      <span className="stat-body"><small>{label}</small><strong>{value}</strong><em>{note}</em></span>
+      <Icon name="chevron" size={16} className="stat-go" />
+    </button>
+  )
 }
-function AdminForm({ admin, centers, onClose, onSave }) {
-  const [form, setForm] = useState({ name: admin?.name || '', email: admin?.email || '', password: '', center_id: admin?.center_id ? String(admin.center_id) : '', active: admin?.active ?? true }); const [busy, setBusy] = useState(false); const [error, setError] = useState('')
-  const activeCenters = centers.filter(c => c.status === 'active'); const change = e => setForm({ ...form, [e.target.name]: e.target.value })
-  async function submit(e) { e.preventDefault(); setBusy(true); setError(''); try { const data = { name: form.name, email: form.email, ...(form.password ? { password: form.password } : {}), ...(form.center_id && (!admin || String(admin.center_id) !== form.center_id) ? { center_id: Number(form.center_id) } : {}), ...(admin ? { active: form.active === true || form.active === 'true' } : {}) }; await onSave(data); onClose() } catch (err) { setError(err.message) } finally { setBusy(false) } }
-  return <Modal title={admin ? 'Edit administrator' : 'Add an administrator'} subtitle="Create an account and connect it to a center." onClose={onClose}><form onSubmit={submit} className="modal-form"><Field label="Full name"><input name="name" value={form.name} onChange={change} placeholder="Administrator name" required autoFocus/></Field><Field label="Email address"><input name="email" type="email" value={form.email} onChange={change} placeholder="name@example.com" required/></Field><Field label={admin ? 'New password (optional)' : 'Password'} hint="Use at least 8 characters."><input name="password" type="password" value={form.password} onChange={change} minLength="8" required={!admin} autoComplete="new-password" placeholder={admin ? 'Leave blank to keep current password' : 'Create a password'}/></Field><Field label="Assigned center"><select name="center_id" value={form.center_id} onChange={change} required={!admin}><option value="" disabled={Boolean(admin?.center_id)}>{admin ? 'No center assigned' : 'Select a center'}</option>{admin?.center_id && !activeCenters.some(c => c.id === admin.center_id) && <option value={admin.center_id}>{admin.center?.name || 'Current center'} (inactive)</option>}{activeCenters.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></Field>{admin && <Field label="Account status"><select name="active" value={String(form.active)} onChange={change}><option value="true">Active</option><option value="false">Inactive</option></select></Field>}{error && <div className="alert error" role="alert">{error}</div>}<div className="modal-actions"><button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button><button className="btn btn-primary" disabled={busy || (!admin && !activeCenters.length)}>{busy ? 'Saving…' : admin ? 'Save changes' : 'Create account'} <Icon name="arrow" size={17}/></button></div>{!admin && !activeCenters.length && <p className="form-note">Create an active center before adding an administrator.</p>}</form></Modal>
+
+function Overview({ centers, admins, loading, go, openModal }) {
+  const activeCenters = centers.filter((c) => c.status === 'active')
+  const capacity = centers.reduce((sum, c) => sum + (c.capacity || 0), 0)
+  const withoutAdmin = activeCenters.filter((c) => !admins.some((a) => a.center_id === c.id && a.active))
+  const unassigned = admins.filter((a) => !a.center_id)
+  const disabled = admins.filter((a) => !a.active)
+  const todo = [
+    ...withoutAdmin.map((c) => ({ key: `c${c.id}`, text: <><b>{c.name}</b> has no active administrator</>, label: 'Assign admin', run: () => openModal({ type: 'admin' }) })),
+    ...unassigned.map((a) => ({ key: `u${a.id}`, text: <><b>{a.name}</b> is not assigned to a center and cannot sign in</>, label: 'Assign center', run: () => openModal({ type: 'admin', item: a }) })),
+    ...disabled.map((a) => ({ key: `d${a.id}`, text: <><b>{a.name}</b>’s account is inactive</>, label: 'Review', run: () => openModal({ type: 'admin', item: a }) })),
+  ]
+  const n = (v) => (loading ? '—' : v)
+
+  return (
+    <>
+      <div className="stats">
+        <Stat icon="centers" tone="indigo" label="Total centers" value={n(centers.length)} note={`${n(activeCenters.length)} active`} onClick={() => go('centers')} />
+        <Stat icon="users" tone="teal" label="Center admins" value={n(admins.length)} note={`${n(admins.filter((a) => a.active && a.center_id).length)} active & assigned`} onClick={() => go('admins')} />
+        <Stat icon="person" tone="amber" label="Total capacity" value={n(capacity.toLocaleString())} note="students across centers" onClick={() => go('centers')} />
+        <Stat icon="alert" tone={todo.length ? 'rose' : 'green'} label="Needs attention" value={n(todo.length)} note={todo.length ? 'items to review' : 'all clear'} onClick={() => document.getElementById('attention')?.scrollIntoView({ behavior: 'smooth' })} />
+      </div>
+
+      <div className="split">
+        <section className="card" id="attention">
+          <header className="card-head"><div><h2>Needs attention</h2><p>Things that may block a center from running smoothly.</p></div></header>
+          {loading ? <Skeleton rows={3} /> : todo.length ? (
+            <ul className="todo">
+              {todo.map((t) => (
+                <li key={t.key}><span className="todo-dot"><Icon name="alert" size={15} /></span><span>{t.text}</span><button className="btn btn-ghost btn-sm" onClick={t.run}>{t.label}</button></li>
+              ))}
+            </ul>
+          ) : <Empty icon="check" title="Everything looks good" text="Every active center has an administrator and all accounts are in order." />}
+        </section>
+
+        <section className="card">
+          <header className="card-head"><div><h2>Centers</h2><p>Most recently added.</p></div><button className="link" onClick={() => go('centers')}>View all</button></header>
+          {loading ? <Skeleton rows={4} /> : centers.length ? (
+            <ul className="mini-list">
+              {[...centers].sort((a, b) => b.id - a.id).slice(0, 5).map((c) => (
+                <li key={c.id}>
+                  <span className="symbol"><Icon name="centers" /></span>
+                  <span className="grow"><b>{c.name}</b><small>{c.city || c.address}</small></span>
+                  <StatusBadge active={c.status === 'active'} />
+                </li>
+              ))}
+            </ul>
+          ) : <Empty icon="centers" title="No centers yet" text="Add your first center to get started." action={() => openModal({ type: 'center' })} actionLabel="Add center" />}
+        </section>
+      </div>
+    </>
+  )
 }
-function Status({ active }) { return <span className={`status ${active ? 'status-active' : 'status-inactive'}`}><span/>{active ? 'Active' : 'Inactive'}</span> }
-function Empty({ icon, title, text, action, actionLabel }) { return <div className="empty"><div className="empty-icon"><Icon name={icon} size={23}/></div><h3>{title}</h3><p>{text}</p>{action && <button className="text-link" onClick={action}>{actionLabel} <Icon name="arrow" size={16}/></button>}</div> }
+
+function Toolbar({ query, setQuery, placeholder, filter, setFilter, options }) {
+  return (
+    <div className="toolbar">
+      <div className="search"><Icon name="search" /><input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={placeholder} aria-label={placeholder} /></div>
+      <div className="segmented" role="group" aria-label="Filter by status">
+        {options.map(([value, label, count]) => (
+          <button key={value} className={filter === value ? 'on' : ''} aria-pressed={filter === value} onClick={() => setFilter(value)}>{label}<span>{count}</span></button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CentersPage({ centers, admins, loading, openModal }) {
+  const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState('all')
+  const list = useMemo(() => centers.filter((c) => (filter === 'all' || c.status === filter) && matches(`${c.name} ${c.code || ''} ${c.address} ${c.city || ''} ${c.contact_person || ''}`, query)), [centers, filter, query])
+  const count = (s) => centers.filter((c) => c.status === s).length
+  const adminsOf = (c) => admins.filter((a) => a.center_id === c.id)
+
+  return (
+    <section className="card">
+      <Toolbar query={query} setQuery={setQuery} placeholder="Search by name, code, city or contact" filter={filter} setFilter={setFilter} options={[['all', 'All', centers.length], ['active', 'Active', count('active')], ['inactive', 'Inactive', count('inactive')]]} />
+      {loading ? <Skeleton /> : list.length ? (
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Center</th><th>Location</th><th>Contact</th><th>Capacity</th><th>Admin</th><th>Status</th><th /></tr></thead>
+            <tbody>
+              {list.map((c) => {
+                const owners = adminsOf(c)
+                return (
+                  <tr key={c.id} className="clickable" onClick={() => openModal({ type: 'detail', item: c })}>
+                    <td><div className="cell"><span className="symbol"><Icon name="centers" /></span><span><b>{c.name}</b><small>{c.code || '—'}</small></span></div></td>
+                    <td className="muted-cell">{centerAddress(c)}</td>
+                    <td><span className="stack"><span>{c.contact_person || '—'}</span><small>{c.contact_phone || c.phone || ''}</small></span></td>
+                    <td>{c.capacity ? c.capacity.toLocaleString() : '—'}</td>
+                    <td>{owners.length ? owners.map((a) => a.name).join(', ') : <span className="warn-text">Unassigned</span>}</td>
+                    <td><StatusBadge active={c.status === 'active'} /></td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <div className="actions">
+                        <button className="btn btn-ghost btn-sm" onClick={() => openModal({ type: 'center', item: c })}>Edit</button>
+                        <button className="btn btn-ghost btn-sm" onClick={() => openModal({ type: 'status', item: c })}>{c.status === 'active' ? 'Deactivate' : 'Activate'}</button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : <Empty icon="centers" title={query || filter !== 'all' ? 'No matching centers' : 'No centers yet'} text={query || filter !== 'all' ? 'Try a different search or filter.' : 'Add your first center to get started.'} action={!query && filter === 'all' ? () => openModal({ type: 'center' }) : null} actionLabel="Add center" />}
+    </section>
+  )
+}
+
+function AdminsPage({ admins, loading, openModal }) {
+  const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState('all')
+  const list = useMemo(() => admins.filter((a) => (filter === 'all' || (filter === 'active' ? a.active : !a.active)) && matches(`${a.name} ${a.email} ${a.designation || ''} ${a.center?.name || ''}`, query)), [admins, filter, query])
+
+  return (
+    <section className="card">
+      <Toolbar query={query} setQuery={setQuery} placeholder="Search by name, email or center" filter={filter} setFilter={setFilter} options={[['all', 'All', admins.length], ['active', 'Active', admins.filter((a) => a.active).length], ['inactive', 'Inactive', admins.filter((a) => !a.active).length]]} />
+      {loading ? <Skeleton /> : list.length ? (
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Administrator</th><th>Contact</th><th>Center</th><th>Last sign-in</th><th>Status</th><th /></tr></thead>
+            <tbody>
+              {list.map((a) => (
+                <tr key={a.id}>
+                  <td><div className="cell"><Avatar name={a.name} /><span><b>{a.name}</b><small>{a.designation || 'Center admin'}</small></span></div></td>
+                  <td><span className="stack"><span>{a.email}</span><small>{a.phone || ''}</small></span></td>
+                  <td>{a.center?.name || <span className="warn-text">Not assigned</span>}</td>
+                  <td className="muted-cell">{formatRelative(a.last_login_at)}</td>
+                  <td><StatusBadge active={a.active} /></td>
+                  <td>
+                    <div className="actions">
+                      <button className="btn btn-ghost btn-sm" onClick={() => openModal({ type: 'admin', item: a })}>Edit</button>
+                      {a.center_id && <button className="btn btn-ghost btn-sm" onClick={() => openModal({ type: 'unassign', item: a })}>Unassign</button>}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : <Empty icon="users" title={query || filter !== 'all' ? 'No matching administrators' : 'No administrators yet'} text={query || filter !== 'all' ? 'Try a different search or filter.' : 'Add an administrator and assign them to a center.'} action={!query && filter === 'all' ? () => openModal({ type: 'admin' }) : null} actionLabel="Add administrator" />}
+    </section>
+  )
+}
+
+function Detail({ label, icon, children }) {
+  return <div className="detail"><Icon name={icon} /><div><small>{label}</small><span>{children || <em>Not provided</em>}</span></div></div>
+}
+
+function CenterDetail({ center, admins, onClose, onEdit, onAddAdmin }) {
+  const days = center.operating_days?.length ? DAYS.filter(([d]) => center.operating_days.includes(d)).map(([, l]) => l).join(', ') : null
+  const owners = admins.filter((a) => a.center_id === center.id)
+  return (
+    <Modal title={center.name} subtitle={center.code ? `Center code ${center.code}` : undefined} onClose={onClose} drawer>
+      <div className="drawer-body">
+        <div className="drawer-status"><StatusBadge active={center.status === 'active'} /><button className="btn btn-ghost btn-sm" onClick={onEdit}><Icon name="edit" size={15} />Edit details</button></div>
+
+        <h3>Location & contact</h3>
+        <Detail label="Address" icon="location">{centerAddress(center)}{center.postal_code ? ` ${center.postal_code}` : ''}</Detail>
+        <Detail label="Center phone" icon="phone">{center.phone}</Detail>
+        <Detail label="Center email" icon="mail">{center.email}</Detail>
+        <Detail label="Contact person" icon="person">{center.contact_person && `${center.contact_person}${center.contact_phone ? ` · ${center.contact_phone}` : ''}`}</Detail>
+
+        <h3>Operations</h3>
+        <Detail label="Student capacity" icon="users">{center.capacity && `${center.capacity.toLocaleString()} students`}</Detail>
+        <Detail label="Opening hours" icon="clock">{formatHours(center)}</Detail>
+        <Detail label="Operating days" icon="calendar">{days}</Detail>
+        <Detail label="Established" icon="calendar">{center.established_on && formatDate(center.established_on)}</Detail>
+
+        <h3>Administrators <span className="count">{owners.length}</span></h3>
+        {owners.length ? (
+          <ul className="mini-list">
+            {owners.map((a) => (
+              <li key={a.id}><Avatar name={a.name} /><span className="grow"><b>{a.name}</b><small>{a.designation || a.email}</small></span><StatusBadge active={a.active} /></li>
+            ))}
+          </ul>
+        ) : <div className="alert alert-info"><Icon name="alert" size={17} />No administrator assigned yet.<button className="link" onClick={onAddAdmin}>Add one</button></div>}
+
+        {center.notes && <><h3>Internal notes</h3><p className="notes">{center.notes}</p></>}
+        <p className="meta">Created {formatDate(center.created_at)} · Updated {formatDate(center.updated_at)}</p>
+      </div>
+    </Modal>
+  )
+}
 
 function Workspace({ session, onLogout }) {
-  const [page, setPage] = useState('overview'); const [centers, setCenters] = useState([]); const [admins, setAdmins] = useState([]); const [loading, setLoading] = useState(true); const [error, setError] = useState(''); const [toast, setToast] = useState(''); const [query, setQuery] = useState(''); const [modal, setModal] = useState(null); const [menu, setMenu] = useState(false); const [working, setWorking] = useState(false)
-  const refresh = useCallback(async () => { setLoading(true); setError(''); try { const [c, a] = await Promise.all([getAll('/centers', session.token), getAll('/center-admins', session.token)]); setCenters(c); setAdmins(a) } catch (err) { if (err.status === 401) { onLogout(false); return } setError(err.message) } finally { setLoading(false) } }, [session.token, onLogout])
-  useEffect(() => { Promise.resolve().then(refresh) }, [refresh]); useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(''), 4000); return () => clearTimeout(timer) }, [toast])
-  const changePage = name => { setPage(name); setQuery(''); setMenu(false) }
-  const filteredCenters = centers.filter(c => `${c.name} ${c.address} ${c.city || ''}`.toLowerCase().includes(query.toLowerCase()))
-  const filteredAdmins = admins.filter(a => `${a.name} ${a.email} ${a.center?.name || ''}`.toLowerCase().includes(query.toLowerCase()))
-  const activeCenters = centers.filter(c => c.status === 'active').length; const assignedAdmins = admins.filter(a => a.center_id).length
-  async function saveCenter(data) { await request(modal.item ? `/centers/${modal.item.id}` : '/centers', { token: session.token, method: modal.item ? 'PATCH' : 'POST', body: data }); setToast(modal.item ? 'Center updated successfully.' : 'Center created successfully.'); await refresh() }
-  async function saveAdmin(data) { await request(modal.item ? `/center-admins/${modal.item.id}` : '/center-admins', { token: session.token, method: modal.item ? 'PATCH' : 'POST', body: data }); setToast(modal.item ? 'Administrator updated successfully.' : 'Administrator created successfully.'); await refresh() }
-  async function confirmAction() { setWorking(true); try { if (modal.type === 'unassign') await request(`/center-admins/${modal.item.id}/center`, { token: session.token, method: 'DELETE' }); else await request(`/centers/${modal.item.id}`, { token: session.token, method: 'PATCH', body: { status: modal.item.status === 'active' ? 'inactive' : 'active' } }); setToast(modal.type === 'unassign' ? 'Administrator removed from center.' : 'Center status updated.'); setModal(null); await refresh() } catch (err) { setError(err.message); setModal(null) } finally { setWorking(false) } }
-  const title = page === 'overview' ? 'Overview' : page === 'centers' ? 'Centers' : 'Center admins'
-  return <div className="app-shell"><aside className={`sidebar ${menu ? 'sidebar-open' : ''}`}><div className="sidebar-brand"><Brand/><button className="icon-button mobile-close" onClick={() => setMenu(false)} aria-label="Close navigation"><Icon name="close"/></button></div><div className="sidebar-label">WORKSPACE</div><nav aria-label="Main navigation">{[['overview','overview','Overview'],['centers','centers','Centers'],['admins','users','Center admins']].map(([id, icon, label]) => <button key={id} className={`nav-item ${page === id ? 'selected' : ''}`} onClick={() => changePage(id)}><Icon name={icon}/><span>{label}</span>{page === id && <span className="nav-active-dot"/>}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-note"><div className="note-icon">✳</div><b>Small steps.<br/>Big possibilities.</b><p>Building brighter futures, together.</p></div><div className="sidebar-user"><div className="avatar">{initials(session.user.name)}</div><div className="user-info"><b>{session.user.name}</b><small>Super administrator</small></div><button className="icon-button logout" title="Sign out" aria-label="Sign out" onClick={() => onLogout(true)}><Icon name="logout" size={19}/></button></div></div></aside>{menu && <div className="mobile-overlay" onClick={() => setMenu(false)}/>}<div className="main-area"><header className="topbar"><button className="icon-button mobile-menu" onClick={() => setMenu(true)} aria-label="Open navigation"><Icon name="menu"/></button><div className="breadcrumb"><span>Workspace</span><Icon name="chevron" size={14}/><strong>{title}</strong></div><div className="topbar-right"><span className="workspace-badge"><span/> SUPER ADMIN WORKSPACE</span><div className="topbar-avatar">{initials(session.user.name)}</div></div></header><main className="content"><div className="page-heading"><div><div className="heading-eyebrow"><span/> YOUR WORKSPACE</div><h1>{page === 'overview' ? <>Welcome back, {session.user.name.split(' ')[0]}<span className="accent">.</span></> : <>{title}<span className="accent">.</span></>}</h1><p>{page === 'overview' ? 'Here’s what’s happening across your learning community.' : page === 'centers' ? 'Manage all your learning centers in one place.' : 'Manage the people looking after your centers.'}</p></div><button className="btn btn-primary heading-action" onClick={() => setModal({ type: page === 'admins' ? 'admin' : 'center' })}><Icon name="plus" size={18}/>{page === 'admins' ? 'Add administrator' : 'Add center'}</button></div>
-    {error && <div className="alert error page-alert" role="alert">{error} <button onClick={refresh}>Try again</button></div>}{toast && <div className="toast" role="status"><Icon name="check" size={16}/>{toast}</div>}
-    {page === 'overview' ? <><div className="overview-banner"><div className="banner-copy"><span className="banner-tag">YOUR COMMUNITY, AT A GLANCE</span><h2>Good things grow<br/><em>when we grow together.</em></h2><p>Every center is a place for new possibilities. Here’s your starting point for keeping everything connected.</p><button onClick={() => changePage('centers')}>Explore your centers <Icon name="arrow" size={17}/></button></div><div className="banner-art" aria-hidden="true"><span className="banner-star">✳</span><span className="banner-ring ring-a"/><span className="banner-ring ring-b"/><span className="banner-plus">✦</span><div className="floating-card"><span>✳</span><div><b>Made for learning</b><small>Built for your community</small></div></div></div></div><div className="section-heading"><div><span className="section-kicker">THE BIG PICTURE</span><h2>Your organization</h2></div><span className="subtle">A quick look at your workspace</span></div><div className="stat-grid"><div className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Icon name="centers"/></span><span className="stat-tag">ALL CENTERS</span></div><strong>{loading ? '—' : centers.length.toString().padStart(2,'0')}</strong><div className="stat-bottom"><span>Total centers</span><button onClick={() => changePage('centers')} aria-label="View centers"><Icon name="arrow" size={18}/></button></div></div><div className="stat-card"><div className="stat-top"><span className="stat-icon peach"><Icon name="check"/></span><span className="stat-tag">OPEN & READY</span></div><strong>{loading ? '—' : activeCenters.toString().padStart(2,'0')}</strong><div className="stat-bottom"><span>Active centers</span><button onClick={() => changePage('centers')} aria-label="View active centers"><Icon name="arrow" size={18}/></button></div></div><div className="stat-card"><div className="stat-top"><span className="stat-icon mint"><Icon name="users"/></span><span className="stat-tag">YOUR PEOPLE</span></div><strong>{loading ? '—' : admins.length.toString().padStart(2,'0')}</strong><div className="stat-bottom"><span>Center admins</span><button onClick={() => changePage('admins')} aria-label="View center administrators"><Icon name="arrow" size={18}/></button></div></div></div><div className="overview-lower"><section className="panel center-preview"><div className="panel-heading"><div><span className="section-kicker">YOUR COMMUNITY</span><h2>Centers at a glance</h2><p>A little overview of your learning spaces.</p></div><button className="text-link" onClick={() => changePage('centers')}>View all <Icon name="arrow" size={16}/></button></div>{loading ? <p className="loading">Loading centers…</p> : centers.length ? <div className="preview-list">{centers.slice(0,4).map(c => <div className="preview-row" key={c.id}><div className="center-symbol"><Icon name="centers" size={19}/></div><div className="preview-name"><b>{c.name}</b><small>{c.city || c.address}</small></div><Status active={c.status === 'active'}/></div>)}</div> : <Empty icon="centers" title="Your first center starts here" text="Add a center to start building your learning community." action={() => setModal({type:'center'})} actionLabel="Add a center"/>}</section><section className="panel quick-panel"><div className="panel-heading"><div><span className="section-kicker">A GOOD PLACE TO START</span><h2>Quick actions</h2><p>Everything you need, right here.</p></div></div><button className="quick-action" onClick={() => setModal({ type: 'center' })}><span className="quick-icon lavender"><Icon name="centers"/></span><span><b>Add a center</b><small>Bring a new location on board</small></span><Icon name="arrow" size={18}/></button><button className="quick-action" onClick={() => setModal({ type: 'admin' })}><span className="quick-icon peach"><Icon name="users"/></span><span><b>Add an administrator</b><small>Connect a person to a center</small></span><Icon name="arrow" size={18}/></button><div className="quick-foot"><span className="tiny-flower">✳</span><span>{loading ? 'Getting things ready…' : `${assignedAdmins} ${assignedAdmins === 1 ? 'administrator' : 'administrators'} assigned to a center`}</span></div></section></div></> : <section className="panel directory"><div className="directory-heading"><div><span className="section-kicker">{page === 'centers' ? 'YOUR LEARNING SPACES' : 'YOUR PEOPLE'}</span><h2>{page === 'centers' ? 'All centers' : 'All administrators'} <span className="count-pill">{page === 'centers' ? centers.length : admins.length}</span></h2><p>{page === 'centers' ? 'View, update, and manage the status of your centers.' : 'Keep track of accounts and their center assignments.'}</p></div><div className="search-box"><Icon name="search" size={18}/><input aria-label={`Search ${title}`} placeholder={`Search ${page === 'centers' ? 'centers' : 'administrators'}...`} value={query} onChange={e => setQuery(e.target.value)}/></div></div>{loading ? <p className="loading">Loading {title.toLowerCase()}…</p> : page === 'centers' ? filteredCenters.length ? <div className="table-wrap"><table><thead><tr><th>CENTER</th><th>LOCATION</th><th>STATUS</th><th>PEOPLE</th><th><span className="sr-only">Actions</span></th></tr></thead><tbody>{filteredCenters.map(c => <tr key={c.id}><td><div className="cell-main"><span className="center-symbol"><Icon name="centers" size={18}/></span><span><b>{c.name}</b><small>{c.phone || 'No phone added'}</small></span></div></td><td><div className="location-cell"><Icon name="location" size={16}/><span>{c.city ? `${c.address}, ${c.city}` : c.address}</span></div></td><td><Status active={c.status === 'active'}/></td><td>{c.users_count ?? 0} users</td><td><div className="row-actions"><button onClick={() => setModal({type:'center',item:c})}>Edit</button><button onClick={() => setModal({type:'status',item:c})}>{c.status === 'active' ? 'Deactivate' : 'Activate'}</button></div></td></tr>)}</tbody></table></div> : <Empty icon="centers" title={query ? 'No centers found' : 'No centers yet'} text={query ? 'Try a different search term.' : 'Add your first center to get started.'} action={!query ? () => setModal({type:'center'}) : null} actionLabel="Add a center"/> : filteredAdmins.length ? <div className="table-wrap"><table><thead><tr><th>ADMINISTRATOR</th><th>ASSIGNED CENTER</th><th>ACCOUNT STATUS</th><th><span className="sr-only">Actions</span></th></tr></thead><tbody>{filteredAdmins.map(a => <tr key={a.id}><td><div className="cell-main"><span className="avatar table-avatar">{initials(a.name)}</span><span><b>{a.name}</b><small>{a.email}</small></span></div></td><td>{a.center?.name || <span className="unassigned">Not assigned</span>}</td><td><Status active={a.active}/></td><td><div className="row-actions"><button onClick={() => setModal({type:'admin',item:a})}>Edit</button>{a.center_id && <button onClick={() => setModal({type:'unassign',item:a})}>Remove from center</button>}</div></td></tr>)}</tbody></table></div> : <Empty icon="users" title={query ? 'No administrators found' : 'No administrators yet'} text={query ? 'Try a different search term.' : 'Add an administrator and assign them to a center.'} action={!query ? () => setModal({type:'admin'}) : null} actionLabel="Add an administrator"/>}</section>}
-    <footer className="app-footer"><span>© {currentYear} ASPIRE · Built for brighter futures</span><span>Made with care <b>✳</b></span></footer></main></div>{modal?.type === 'center' && <CenterForm center={modal.item} onClose={() => setModal(null)} onSave={saveCenter}/>} {modal?.type === 'admin' && <AdminForm admin={modal.item} centers={centers} onClose={() => setModal(null)} onSave={saveAdmin}/>} {(modal?.type === 'unassign' || modal?.type === 'status') && <Modal title={modal.type === 'unassign' ? 'Remove center assignment?' : `${modal.item.status === 'active' ? 'Deactivate' : 'Activate'} this center?`} subtitle={modal.type === 'unassign' ? `${modal.item.name} will no longer be assigned to ${modal.item.center?.name || 'this center'} and cannot sign in until reassigned.` : `${modal.item.name} will be marked ${modal.item.status === 'active' ? 'inactive' : 'active'}. You can change this later.`} onClose={() => setModal(null)}><div className="modal-actions confirm-actions"><button className="btn btn-ghost" onClick={() => setModal(null)}>Cancel</button><button className="btn btn-primary" disabled={working} onClick={confirmAction}>{working ? 'Saving…' : modal.type === 'unassign' ? 'Remove assignment' : 'Confirm'}</button></div></Modal>}</div>
+  const [page, setPage] = useState('overview')
+  const [centers, setCenters] = useState([])
+  const [admins, setAdmins] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [toast, setToast] = useState(null)
+  const [modal, setModal] = useState(null)
+  const [menu, setMenu] = useState(false)
+  const [working, setWorking] = useState(false)
+  const token = session.token
+
+  const refresh = useCallback(async () => {
+    setError('')
+    try {
+      const [c, a] = await Promise.all([getAll('/centers', token), getAll('/center-admins', token)])
+      setCenters(c)
+      setAdmins(a)
+    } catch (err) {
+      if (err.status === 401) { onLogout(false); return }
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [token, onLogout])
+
+  useEffect(() => { Promise.resolve().then(refresh) }, [refresh])
+  const dismissToast = useCallback(() => setToast(null), [])
+  const closeModal = useCallback(() => setModal(null), [])
+  const go = (name) => { setPage(name); setMenu(false) }
+
+  async function save(kind, data) {
+    const base = kind === 'center' ? '/centers' : '/center-admins'
+    const editing = modal.item
+    await request(editing ? `${base}/${editing.id}` : base, { token, method: editing ? 'PATCH' : 'POST', body: data })
+    setToast({ text: `${kind === 'center' ? 'Center' : 'Administrator'} ${editing ? 'updated' : 'created'}.` })
+    await refresh()
+  }
+
+  async function confirm() {
+    setWorking(true)
+    try {
+      if (modal.type === 'unassign') await request(`/center-admins/${modal.item.id}/center`, { token, method: 'DELETE' })
+      else await request(`/centers/${modal.item.id}`, { token, method: 'PATCH', body: { status: modal.item.status === 'active' ? 'inactive' : 'active' } })
+      setToast({ text: modal.type === 'unassign' ? 'Administrator unassigned.' : 'Center status updated.' })
+      setModal(null)
+      await refresh()
+    } catch (err) {
+      setToast({ type: 'error', text: err.message })
+      setModal(null)
+    } finally {
+      setWorking(false)
+    }
+  }
+
+  const titles = {
+    overview: [`Welcome back, ${session.user.name.split(' ')[0]}`, 'A quick look at how your centers are doing today.'],
+    centers: ['Centers', 'Manage every center’s details, contacts and status.'],
+    admins: ['Center admins', 'Control who manages each center and their access.'],
+  }
+  const action = page === 'admins'
+    ? <button className="btn btn-primary" onClick={() => setModal({ type: 'admin' })}><Icon name="plus" />Add administrator</button>
+    : <button className="btn btn-primary" onClick={() => setModal({ type: 'center' })}><Icon name="plus" />Add center</button>
+  const item = modal?.item
+
+  return (
+    <div className="shell">
+      <aside className={`sidebar ${menu ? 'open' : ''}`}>
+        <div className="sidebar-top"><Brand inverse /><button className="icon-btn only-mobile" onClick={() => setMenu(false)} aria-label="Close menu"><Icon name="close" /></button></div>
+        <nav aria-label="Main">
+          {NAV.map(([id, icon, label]) => (
+            <button key={id} className={`nav ${page === id ? 'on' : ''}`} aria-current={page === id ? 'page' : undefined} onClick={() => go(id)}><Icon name={icon} />{label}</button>
+          ))}
+        </nav>
+        <div className="sidebar-user">
+          <Avatar name={session.user.name} />
+          <span><b>{session.user.name}</b><small>Super admin</small></span>
+          <button className="icon-btn" onClick={() => onLogout(true)} title="Sign out" aria-label="Sign out"><Icon name="logout" /></button>
+        </div>
+      </aside>
+      {menu && <div className="scrim" onClick={() => setMenu(false)} />}
+
+      <div className="main">
+        <header className="topbar">
+          <button className="icon-btn only-mobile" onClick={() => setMenu(true)} aria-label="Open menu"><Icon name="menu" /></button>
+          <nav className="crumbs" aria-label="Breadcrumb"><span>Workspace</span><Icon name="chevron" size={14} /><b>{NAV.find(([id]) => id === page)[2]}</b></nav>
+        </header>
+        <main className="content">
+          <PageHeader title={titles[page][0]} text={titles[page][1]} action={page === 'overview' ? null : action} />
+          {error && <div className="alert alert-error" role="alert"><Icon name="alert" size={17} />{error}<button className="link" onClick={refresh}>Try again</button></div>}
+          {page === 'overview' && <Overview centers={centers} admins={admins} loading={loading} go={go} openModal={setModal} />}
+          {page === 'centers' && <CentersPage centers={centers} admins={admins} loading={loading} openModal={setModal} />}
+          {page === 'admins' && <AdminsPage admins={admins} loading={loading} openModal={setModal} />}
+        </main>
+      </div>
+
+      {modal?.type === 'center' && <CenterForm center={item} onClose={closeModal} onSave={(d) => save('center', d)} />}
+      {modal?.type === 'admin' && <AdminForm admin={item} centers={centers} onClose={closeModal} onSave={(d) => save('admin', d)} />}
+      {modal?.type === 'detail' && <CenterDetail center={centers.find((c) => c.id === item.id) || item} admins={admins} onClose={closeModal} onEdit={() => setModal({ type: 'center', item })} onAddAdmin={() => setModal({ type: 'admin' })} />}
+      {modal?.type === 'unassign' && <ConfirmDialog danger title="Unassign this administrator?" text={`${item.name} will be removed from ${item.center?.name || 'their center'}, signed out, and unable to sign in until reassigned.`} confirmLabel="Unassign" busy={working} onConfirm={confirm} onClose={closeModal} />}
+      {modal?.type === 'status' && <ConfirmDialog danger={item.status === 'active'} title={`${item.status === 'active' ? 'Deactivate' : 'Activate'} ${item.name}?`} text={item.status === 'active' ? 'An inactive center cannot receive new administrators. You can reactivate it at any time.' : 'The center will be available for administrators again.'} confirmLabel={item.status === 'active' ? 'Deactivate' : 'Activate'} busy={working} onConfirm={confirm} onClose={closeModal} />}
+      <Toast toast={toast} onDismiss={dismissToast} />
+    </div>
+  )
 }
+
 export default function App() {
   const [session, setSession] = useState(() => { try { return JSON.parse(sessionStorage.getItem('aspire_session') || 'null') } catch { return null } })
-  const login = data => { sessionStorage.setItem('aspire_session', JSON.stringify({ token: data.token, user: data.user })); setSession({ token: data.token, user: data.user }) }
-  const logout = useCallback(async (notifyServer = true) => { const current = sessionStorage.getItem('aspire_session'); if (notifyServer && current) { try { await request('/logout', { method: 'POST', token: JSON.parse(current).token }) } catch { /* Clear the local session even if the server is unavailable. */ } } sessionStorage.removeItem('aspire_session'); setSession(null) }, [])
-  return session ? <Workspace session={session} onLogout={logout}/> : <Login onLogin={login}/>
+  const login = (data) => {
+    sessionStorage.setItem('aspire_session', JSON.stringify({ token: data.token, user: data.user }))
+    setSession({ token: data.token, user: data.user })
+  }
+  const logout = useCallback(async (notifyServer = true) => {
+    const current = sessionStorage.getItem('aspire_session')
+    if (notifyServer && current) {
+      try { await request('/logout', { method: 'POST', token: JSON.parse(current).token }) } catch { /* clear locally even if the server is unreachable */ }
+    }
+    sessionStorage.removeItem('aspire_session')
+    setSession(null)
+  }, [])
+  return session ? <Workspace session={session} onLogout={logout} /> : <Login onLogin={login} />
 }

@@ -38,6 +38,8 @@ class CenterAdminController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')],
             'password' => ['required', 'string', 'min:8', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:40'],
+            'designation' => ['nullable', 'string', 'max:255'],
             'center_id' => ['required', 'integer', Rule::exists('centers', 'id')->where('status', 'active')],
         ]);
         $data['role'] = 'center_admin';
@@ -65,6 +67,8 @@ class CenterAdminController extends Controller
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users')->ignore($centerAdmin->id)],
             'password' => ['sometimes', 'required', 'string', 'min:8', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:40'],
+            'designation' => ['nullable', 'string', 'max:255'],
             'center_id' => ['sometimes', 'required', 'integer', Rule::exists('centers', 'id')->where('status', 'active')],
             'active' => ['sometimes', 'boolean'],
         ]);

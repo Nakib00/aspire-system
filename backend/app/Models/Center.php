@@ -8,6 +8,15 @@ class Center extends Model
 {
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return [
+            'operating_days' => 'array',
+            'established_on' => 'date:Y-m-d',
+            'capacity' => 'integer',
+        ];
+    }
+
     public function sections()
     {
         return $this->hasMany(Section::class);

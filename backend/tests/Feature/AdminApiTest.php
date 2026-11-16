@@ -87,4 +87,28 @@ class AdminApiTest extends TestCase
         $newToken = $this->login($admin);
         $this->withToken($newToken)->getJson('/api/v1/me')->assertOk()->assertJsonPath('user.center_id', $other->id);
     }
+
+    public function test_center_stores_management_details_and_generates_code(): void
+    {
+        $super = User::factory()->create(['role' => 'super_admin', 'active' => true, 'password' => 'password123']);
+        $token = $this->login($super);
+        $payload = ['name' => 'East', 'address' => 'Road 1', 'email' => 'east@example.com', 'contact_person' => 'Rahim', 'contact_phone' => '0170000', 'capacity' => 120, 'established_on' => '2020-01-05', 'opens_at' => '09:00', 'closes_at' => '17:30', 'operating_days' => ['sat', 'sun'], 'notes' => 'Near the park'];
+        $this->withToken($token)->postJson('/api/v1/centers', $payload)->assertCreated()
+            ->assertJsonPath('data.code', 'CTR-001')->assertJsonPath('data.capacity', 120)->assertJsonPath('data.operating_days', ['sat', 'sun']);
+        $this->withToken($token)->postJson('/api/v1/centers', ['name' => 'West', 'address' => 'Road 2', 'opens_at' => '10:00', 'closes_at' => '09:00'])->assertUnprocessable();
+        $this->withToken($token)->postJson('/api/v1/centers', ['name' => 'West', 'address' => 'Road 2', 'operating_days' => ['xyz']])->assertUnprocessable();
+        $this->withToken($token)->getJson('/api/v1/centers')->assertOk()->assertJsonPath('data.0.admins_count', 0);
+    }
+
+    public function test_center_admin_stores_phone_and_designation_and_login_time(): void
+    {
+        $center = Center::create(['name' => 'North', 'address' => 'Dhaka']);
+        $super = User::factory()->create(['role' => 'super_admin', 'active' => true, 'password' => 'password123']);
+        $token = $this->login($super);
+        $id = $this->withToken($token)->postJson('/api/v1/center-admins', ['name' => 'A', 'email' => 'a@example.com', 'password' => 'password123', 'center_id' => $center->id, 'phone' => '017', 'designation' => 'Principal'])
+            ->assertCreated()->assertJsonPath('data.designation', 'Principal')->json('data.id');
+        $this->assertNull(User::find($id)->last_login_at);
+        $this->login(User::find($id));
+        $this->assertNotNull(User::find($id)->last_login_at);
+    }
 }

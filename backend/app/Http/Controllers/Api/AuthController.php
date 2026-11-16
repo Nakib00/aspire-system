@@ -18,6 +18,7 @@ class AuthController extends Controller
         if (! $user || ! $user->active || ! in_array($user->role, ['super_admin', 'center_admin'], true) || ($user->role === 'center_admin' && ! $user->center_id) || ! Hash::check($data['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials or inactive account.'], 401);
         }
+        $user->forceFill(['last_login_at' => now()])->save();
         $token = Auth::guard('api')->login($user);
 
         return response()->json(['token' => $token, 'token_type' => 'Bearer', 'expires_in' => config('jwt.ttl') * 60, 'user' => $user]);
