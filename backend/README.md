@@ -1,10 +1,10 @@
 ﻿# ASPIRE backend
 
-Laravel 13 MVC foundation for the ASPIRE API. This stage provides the project setup, SQLite migrations and Eloquent models; API endpoints, authentication, authorization, business rules, seed data and the user interface are future work. The schema alone does not enforce role or center isolation, payment atomicity, file validation, or notification delivery.
+Laravel 13 MVC foundation for the ASPIRE API. Administrator authentication and center and center-admin management are available. Other roles, financial workflows, assignments, notification delivery, and the user interface are future work; the schema alone does not enforce their access rules or business invariants.
 
 ## Requirements
 
-- PHP 8.3 or later with SQLite/PDO SQLite, mbstring, XML, OpenSSL, cURL and fileinfo extensions.
+- PHP 8.3 or later with SQLite/PDO SQLite, mbstring, XML, OpenSSL, cURL, sodium and fileinfo extensions.
 - Composer 2 and Git. ZIP support in PHP or an unzip utility makes installation faster.
 - Node.js 20.19+ or 22.12+ and npm for the separate React frontend.
 
@@ -13,13 +13,26 @@ Laravel 13 MVC foundation for the ASPIRE API. This stage provides the project se
 1. Clone the repository and open a terminal in `backend`.
 2. Run `composer install`.
 3. Run `Copy-Item .env.example .env` (only if `.env` does not already exist).
-4. Run `php artisan key:generate`.
+4. Run `php artisan key:generate` and `php artisan jwt:secret` to generate local application and JWT secrets.
 5. Run `New-Item -ItemType File -Force database/database.sqlite` if the file does not exist. The example configuration uses SQLite; keep `DB_CONNECTION=sqlite` and do not set a MySQL database.
 6. Run `php artisan migrate` to create the tables.
 7. Run `php artisan serve`. The default address is http://127.0.0.1:8000.
 8. In another terminal follow `frontend/README.md` to run React.
 
 On macOS/Linux use `cp .env.example .env` and `touch database/database.sqlite` instead. Never commit `.env`, the SQLite database, `vendor`, or uploaded files. Run `php artisan test` for backend tests and `vendor/bin/pint` to format PHP.
+
+## Administrator API
+
+To create the first super administrator on a new installation, set `INITIAL_ADMIN_NAME`, `INITIAL_ADMIN_EMAIL`, and `INITIAL_ADMIN_PASSWORD` in the local `.env` file, then run `php artisan db:seed`. The seeder creates the account only when the email does not already exist; it does not reset existing passwords. Use a strong unique password and keep `.env` private. On the original development machine, the requested initial account has already been created.
+
+Requests and responses use JSON. Send `Accept: application/json`. Log in with `POST /api/v1/login` and JSON `{ "email": "...", "password": "..." }`. The response contains a signed JWT; send `Authorization: Bearer <token>` for protected requests. Tokens expire after 60 minutes by default, and `POST /api/v1/logout` invalidates the current token. `GET /api/v1/me` returns the current account. Login permits active super admins and active center admins assigned to a center; management endpoints below require the super-admin role. Existing opaque tokens from the previous implementation are no longer accepted. Keep `JWT_SECRET` private and consistent between app servers; use a shared durable cache for the JWT blacklist in multi-server deployments.
+
+- `GET /api/v1/centers` lists centers; `POST /api/v1/centers` creates one with `name`, `address`, optional `city`, `phone`, and `status` (`active` or `inactive`).
+- `GET /api/v1/centers/{id}` shows details and assigned center admins; `PATCH /api/v1/centers/{id}` updates fields or deactivates a center by setting `status` to `inactive`.
+- `GET /api/v1/center-admins` lists center admins; `POST /api/v1/center-admins` creates one with `name`, `email`, `password`, and an active `center_id`.
+- `GET /api/v1/center-admins/{id}` shows an account; `PATCH /api/v1/center-admins/{id}` can change its name, email, password, active flag, or center assignment by setting `center_id`. `DELETE /api/v1/center-admins/{id}/center` removes its center assignment without deleting the account. An unassigned admin cannot log in until reassigned. Password changes, deactivation, reassignment and removal invalidate existing tokens.
+
+List responses are paginated. Center and center-admin deletion are intentionally not exposed; status changes preserve related records. Use HTTPS outside local development.
 
 ## Structure and conventions
 

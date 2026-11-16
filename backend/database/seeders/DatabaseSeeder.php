@@ -15,11 +15,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $email = config('aspire.initial_admin_email');
+        $password = config('aspire.initial_admin_password');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        if (! $email || ! $password) {
+            $this->command?->warn('Initial administrator not created: set INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD.');
+
+            return;
+        }
+
+        User::firstOrCreate(['email' => strtolower($email)], [
+            'name' => config('aspire.initial_admin_name', 'Super Admin'),
+            'password' => $password,
+            'role' => 'super_admin',
+            'active' => true,
         ]);
     }
 }

@@ -9,13 +9,24 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 #[Fillable(['name', 'email', 'password', 'role', 'center_id', 'active'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+#[Hidden(['password', 'remember_token', 'token_version'])]
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    public function getJWTIdentifier(): mixed
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return ['token_version' => (int) $this->token_version];
+    }
 
     public function center()
     {
@@ -52,6 +63,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'active' => 'boolean',
         ];
     }
 }
