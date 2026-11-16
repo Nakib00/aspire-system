@@ -15,13 +15,13 @@ class AuthController extends Controller
     {
         $data = $request->validate(['email' => ['required', 'email'], 'password' => ['required', 'string']]);
         $user = User::where('email', strtolower($data['email']))->first();
-        if (! $user || ! $user->active || ! in_array($user->role, ['super_admin', 'center_admin'], true) || ($user->role === 'center_admin' && ! $user->center_id) || ! Hash::check($data['password'], $user->password)) {
+        if (! $user || ! $user->active || ! in_array($user->role, ['super_admin', 'center_admin', 'teacher', 'parent'], true) || ($user->role !== 'super_admin' && ! $user->center_id) || ! Hash::check($data['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials or inactive account.'], 401);
         }
         $user->forceFill(['last_login_at' => now()])->save();
         $token = Auth::guard('api')->login($user);
 
-        return response()->json(['token' => $token, 'token_type' => 'Bearer', 'expires_in' => config('jwt.ttl') * 60, 'user' => $user]);
+        return response()->json(['token' => $token, 'token_type' => 'Bearer', 'expires_in' => config('jwt.ttl') * 60, 'user' => $user->load('center:id,name,code')]);
     }
 
     public function me(Request $request): JsonResponse

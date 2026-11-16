@@ -6,7 +6,7 @@ const currentYear = new Date().getFullYear()
 
 const highlights = [
   ['centers', 'Every center in one place', 'Profiles, contacts, capacity and opening hours, always up to date.'],
-  ['users', 'Clear ownership', 'Assign an administrator to each center and manage their access in a click.'],
+  ['users', 'One place for everyone', 'Students, parents and teachers each get the right view of the center.'],
   ['shield', 'Secure by default', 'Role-based access with instant sign-out when an account changes.'],
 ]
 
@@ -23,10 +23,6 @@ export default function Login({ onLogin }) {
     setBusy(true)
     try {
       const data = await request('/login', { method: 'POST', body: { email, password } })
-      if (data.user.role !== 'super_admin') {
-        await request('/logout', { method: 'POST', token: data.token }).catch(() => {})
-        throw new Error('This workspace is for super admins. Your role dashboard is coming soon.')
-      }
       onLogin(data)
     } catch (err) {
       setError(err.message)
@@ -58,7 +54,7 @@ export default function Login({ onLogin }) {
         <div className="login-mobile-brand"><Brand /></div>
         <form className="login-card" onSubmit={submit} noValidate={false}>
           <h2>Sign in</h2>
-          <p>Use your administrator account to continue.</p>
+          <p>Use the account your center gave you to continue.</p>
 
           <label className="field">
             <span className="field-label">Email address</span>
@@ -76,7 +72,7 @@ export default function Login({ onLogin }) {
           {error && <div className="alert alert-error" role="alert"><Icon name="alert" size={17} />{error}</div>}
 
           <button className="btn btn-primary btn-block" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}{!busy && <Icon name="arrow" size={17} />}</button>
-          <p className="login-help">Forgot your password? Ask a super admin to reset it for you.</p>
+          <p className="login-help">Forgot your password? Ask your center administrator to reset it.</p>
         </form>
       </main>
     </div>

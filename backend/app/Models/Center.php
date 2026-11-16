@@ -22,6 +22,11 @@ class Center extends Model
         return $this->hasMany(Section::class);
     }
 
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
+
     public function users()
     {
         return $this->hasMany(User::class);
