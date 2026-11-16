@@ -14,12 +14,12 @@ Laravel 13 MVC foundation for the ASPIRE API. Administrator authentication and c
 2. Run `composer install`.
 3. Run `Copy-Item .env.example .env` (only if `.env` does not already exist).
 4. Run `php artisan key:generate` and `php artisan jwt:secret` to generate local application and JWT secrets.
-5. Run `New-Item -ItemType File -Force database/database.sqlite` if the file does not exist. The example configuration uses SQLite; keep `DB_CONNECTION=sqlite` and do not set a MySQL database.
-6. Run `php artisan migrate` to create the tables.
+5. If `database/database.sqlite` does not exist, run `Copy-Item database/aspire-template.sqlite database/database.sqlite`. The example configuration uses SQLite; keep `DB_CONNECTION=sqlite` and do not set a MySQL database. Do not overwrite an existing working database.
+6. Run `php artisan migrate` to apply any newer migrations.
 7. Run `php artisan serve`. The default address is http://127.0.0.1:8000.
 8. In another terminal follow `frontend/README.md` to run React.
 
-On macOS/Linux use `cp .env.example .env` and `touch database/database.sqlite` instead. Never commit `.env`, the SQLite database, `vendor`, or uploaded files. Run `php artisan test` for backend tests and `vendor/bin/pint` to format PHP.
+On macOS/Linux use `cp .env.example .env` and `cp database/aspire-template.sqlite database/database.sqlite` instead, copying only when the destination does not exist. The committed template contains the initial development super-admin account with a hashed password; it has no centers or center admins. Each teammate's ignored `database/database.sqlite` is a separate working copy, so changes are not shared automatically. The template is for local development, not production. Never commit `.env`, a working SQLite database, `vendor`, or uploaded files. Run `php artisan test` for backend tests and `vendor/bin/pint` to format PHP.
 
 ## Administrator API
 

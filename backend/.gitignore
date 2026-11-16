@@ -28,3 +28,4 @@ Thumbs.db
 
 /database/*.sqlite
 /database/*.sqlite-*
+!/database/aspire-template.sqlite
