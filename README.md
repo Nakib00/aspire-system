@@ -68,13 +68,13 @@ This project was developed as a Software Engineering course project. It includes
 
 ### Requirements
 
-| Tool | Version |
-|------|---------|
-| PHP | 8.3+ |
-| Composer | 2+ |
-| Node.js | 20.19+ or 22.12+ |
-| npm | bundled with Node.js |
-| Git | any |
+| Tool | Version | Download |
+|------|---------|----------|
+| PHP | 8.3+ | [php.net/downloads](https://www.php.net/downloads) |
+| Composer | 2+ | [getcomposer.org/download](https://getcomposer.org/download) |
+| Node.js | 20.19+ or 22.12+ | [nodejs.org](https://nodejs.org) |
+| npm | bundled with Node.js | included with Node.js |
+| Git | any | [git-scm.com/downloads](https://git-scm.com/downloads) |
 
 ### Step 1: Clone the repository
 
