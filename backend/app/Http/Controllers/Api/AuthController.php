@@ -15,7 +15,7 @@ class AuthController extends Controller
     {
         $data = $request->validate(['email' => ['required', 'email'], 'password' => ['required', 'string']]);
         $user = User::where('email', strtolower($data['email']))->first();
-        if (! $user || ! $user->active || ! in_array($user->role, ['super_admin', 'center_admin', 'teacher', 'parent'], true) || ($user->role !== 'super_admin' && ! $user->center_id) || ! Hash::check($data['password'], $user->password)) {
+        if (! $user || ! $user->active || ! in_array($user->role, ['super_admin', 'center_admin', 'teacher', 'parent', 'student'], true) || ($user->role === 'student' && str_ends_with($user->email, '@students.aspire.local')) || ($user->role !== 'super_admin' && ! $user->center_id) || ! Hash::check($data['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials or inactive account.'], 401);
         }
         $user->forceFill(['last_login_at' => now()])->save();

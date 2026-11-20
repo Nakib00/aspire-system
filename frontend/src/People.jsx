@@ -115,7 +115,7 @@ export function GuardianFields({ value, onChange, parents, onRemove }) {
 export function PersonForm({ role, person, students, parents, onClose, onSave }) {
   const meta = ROLE_META[role]
   const [form, setForm] = useState({
-    name: val(person?.name), email: role === 'student' ? '' : val(person?.email), phone: val(person?.phone), gender: val(person?.gender),
+    name: val(person?.name), email: role === 'student' && person?.email?.endsWith('@students.aspire.local') ? '' : val(person?.email), phone: val(person?.phone), gender: val(person?.gender),
     date_of_birth: val(person?.date_of_birth), address: val(person?.address), notes: val(person?.notes), password: '',
     school_name: val(person?.school_name), grade_level: val(person?.grade_level), qualification: val(person?.qualification), joined_on: val(person?.joined_on),
     active: person?.active ?? true,
@@ -140,6 +140,7 @@ export function PersonForm({ role, person, students, parents, onClose, onSave })
     if (role === 'student') {
       payload.school_name = form.school_name || null; payload.grade_level = form.grade_level || null
       if (form.email) payload.email = form.email
+      if (form.password) payload.password = form.password
       if (!person) payload.guardians = guardians.filter((g) => (g.mode === 'existing' ? g.parent_id : g.name || g.email)).map(guardianPayload)
     }
     if (role === 'teacher') { payload.qualification = form.qualification || null; payload.joined_on = form.joined_on || null }
@@ -175,6 +176,8 @@ export function PersonForm({ role, person, students, parents, onClose, onSave })
             </div>
           </fieldset>
         )}
+
+        {role === 'student' && <fieldset><legend>Student sign-in (optional)</legend><Field label="Email" error={err('email')} hint="Add an email and password to let the student sign in."><input type="email" name="email" value={form.email} onChange={change} placeholder="student@example.com" required={Boolean(form.password && !person)} /></Field><Field label={person ? 'New password' : 'Password'} error={err('password')} hint="At least 8 characters. Leave blank to keep the existing password."><input type="password" name="password" value={form.password} onChange={change} minLength="8" autoComplete="new-password" required={Boolean(form.email && (!person || person.email?.endsWith('@students.aspire.local')))} /></Field></fieldset>}
 
         {role === 'teacher' && (
           <fieldset>

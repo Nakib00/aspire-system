@@ -25,6 +25,11 @@ const icons = {
   book: <><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 7h6"/></>,
   trash: <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>,
   family: <><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M2 20v-1a6 6 0 0 1 12 0v1M14.5 15a4.5 4.5 0 0 1 7.5 3.5V20"/></>,
+  file: <><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></>,
+  image: <><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m21 16-5-5-8 8"/></>,
+  video: <><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></>,
+  upload: <path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>,
+  checkcircle: <><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></>,
   person: <><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></>,
 }
 

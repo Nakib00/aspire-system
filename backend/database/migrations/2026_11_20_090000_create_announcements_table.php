@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('announcements', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('section_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete();
+            $table->string('title')->nullable();
+            $table->text('body');
+            $table->boolean('pinned')->default(false);
+            $table->index(['section_id', 'created_at']);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('announcements');
+    }
+};

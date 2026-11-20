@@ -33,6 +33,11 @@ class Section extends Model
         return $this->belongsToMany(User::class, 'section_teacher', 'section_id', 'teacher_id');
     }
 
+    public function attendanceRecords()
+    {
+        return $this->hasMany(AttendanceRecord::class);
+    }
+
     public function assignments()
     {
         return $this->hasMany(Assignment::class);
