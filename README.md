@@ -63,6 +63,22 @@ This project was developed as a Software Engineering course project. It includes
 
 ---
 
+## Test Accounts
+
+Use these accounts to test the system:
+
+| Role | Email | Password |
+|---|---|---|
+| Super Admin | nakibulislam54@gmail.com | password |
+| Center Admin | center.admin@aspire.test | password |
+| Teacher | nusrat.jahan@aspire.test | password |
+| Parent | karim.hossain@aspire.test | password |
+| Student | ayaan.hossain@aspire.test | password |
+
+> The super-admin account `nakibulislam54@gmail.com` is preserved across system resets.
+
+---
+
 ## Team Members
 
 | Name | Role in System | GitHub |
