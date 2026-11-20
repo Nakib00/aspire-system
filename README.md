@@ -69,11 +69,11 @@ Use these accounts to test the system:
 
 | Role | Email | Password |
 |---|---|---|
-| Super Admin | nakibulislam54@gmail.com | password |
-| Center Admin | center.admin@aspire.test | password |
-| Teacher | nusrat.jahan@aspire.test | password |
-| Parent | karim.hossain@aspire.test | password |
-| Student | ayaan.hossain@aspire.test | password |
+| Super Admin | nakibulislam54@gmail.com | Password123 |
+| Center Admin | center.admin@aspire.test | Password123 |
+| Teacher | nusrat.jahan@aspire.test | Password123 |
+| Parent | karim.hossain@aspire.test | Password123 |
+| Student | ayaan.hossain@aspire.test | Password123 |
 
 > The super-admin account `nakibulislam54@gmail.com` is preserved across system resets.
 
