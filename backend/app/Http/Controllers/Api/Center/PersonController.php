@@ -38,13 +38,16 @@ abstract class PersonController extends CenterScopedController
         return [];
     }
 
+    /** Hook run inside the save transaction after the person is created or updated. */
     protected function afterSave(Request $request, int $centerId, User $person, bool $created): void {}
 
+    /** Base query restricted to this role and center. */
     protected function query(int $centerId): Builder
     {
         return User::query()->where('center_id', $centerId)->where('role', $this->role());
     }
 
+    /** Find a person of this role in the admin's center (404 otherwise). */
     protected function find(Request $request, int|string $id): User
     {
         return $this->query($this->centerId($request))->with($this->relations())->findOrFail($id);
@@ -67,12 +70,18 @@ abstract class PersonController extends CenterScopedController
             $rules['email'] = [...$partial, 'required', 'email', 'max:255', Rule::unique('users')->ignore($person?->id)];
             $rules['password'] = [...($person ? ['sometimes'] : ['required']), 'string', 'min:8', 'max:255'];
         } else {
-            $rules['email'] = ['nullable', 'email', 'max:255', Rule::unique('users')->ignore($person?->id)];
+            $rules['email'] = ['nullable', 'email', 'max:255', 'not_regex:/@students\.aspire\.local$/i', Rule::unique('users')->ignore($person?->id)];
+            $rules['password'] = [$person ? 'sometimes' : 'required_with:email', 'nullable', 'string', 'min:8', 'max:255'];
         }
 
         return $rules + $this->extraRules($request, $centerId, $person);
     }
 
+    /**
+     * List people.
+     *
+     * GET /api/v1/center/{people}
+     */
     public function index(Request $request): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -87,6 +96,11 @@ abstract class PersonController extends CenterScopedController
         return response()->json($query->paginate(50));
     }
 
+    /**
+     * Create a person.
+     *
+     * POST /api/v1/center/{people}
+     */
     public function store(Request $request): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -98,7 +112,7 @@ abstract class PersonController extends CenterScopedController
             $attributes = collect($data)->only((new User)->getFillable())->all();
             if (! $this->canSignIn()) {
                 $attributes['email'] ??= 'stu-'.Str::lower(Str::random(12)).'@students.aspire.local';
-                $attributes['password'] = Str::random(40);
+                $attributes['password'] ??= Str::random(40);
             }
             $person = User::create($attributes + ['role' => $this->role(), 'center_id' => $centerId, 'active' => $data['active'] ?? true]);
             $person->update(['code' => $this->codePrefix().'-'.str_pad((string) $person->id, 5, '0', STR_PAD_LEFT)]);
@@ -110,11 +124,21 @@ abstract class PersonController extends CenterScopedController
         return response()->json(['data' => $person->fresh($this->relations())], 201);
     }
 
+    /**
+     * Show one person.
+     *
+     * GET /api/v1/center/{people}/{id}
+     */
     public function show(Request $request, string $id): JsonResponse
     {
         return response()->json(['data' => $this->find($request, $id)]);
     }
 
+    /**
+     * Update a person.
+     *
+     * PUT|PATCH /api/v1/center/{people}/{id}
+     */
     public function update(Request $request, string $id): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -125,6 +149,9 @@ abstract class PersonController extends CenterScopedController
         $data = $request->validate($this->rules($centerId, $person, $request));
         if (array_key_exists('email', $data) && $data['email'] === null) {
             unset($data['email']);
+        }
+        if (array_key_exists('password', $data) && $data['password'] === null) {
+            unset($data['password']);
         }
         DB::transaction(function () use ($request, $centerId, $person, $data): void {
             $person->update(collect($data)->only((new User)->getFillable())->except('code')->all());
@@ -137,6 +164,11 @@ abstract class PersonController extends CenterScopedController
         return response()->json(['data' => $person->fresh($this->relations())]);
     }
 
+    /**
+     * Delete a person.
+     *
+     * DELETE /api/v1/center/{people}/{id}
+     */
     public function destroy(Request $request, string $id): JsonResponse
     {
         $person = $this->find($request, $id);

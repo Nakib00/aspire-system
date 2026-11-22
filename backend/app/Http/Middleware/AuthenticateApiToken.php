@@ -8,8 +8,18 @@ use Illuminate\Support\Facades\Auth;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Authenticates API requests from the `Authorization: Bearer` JWT.
+ *
+ * Rejects with 401 when the token is missing or invalid, the user is inactive or has no
+ * center (Super Admins excepted), or the token's `token_version` no longer matches the user's.
+ * Bumping `token_version` therefore signs a user out of every device at once.
+ */
 class AuthenticateApiToken
 {
+    /**
+     * Resolve the user from the bearer token and continue, or answer 401.
+     */
     public function handle(Request $request, Closure $next): Response
     {
         try {

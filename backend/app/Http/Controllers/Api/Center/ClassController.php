@@ -17,6 +17,7 @@ class ClassController extends CenterScopedController
 {
     private const RELATIONS = ['subject', 'teachers:id,name,code'];
 
+    /** Find a class of the admin's own center (404 otherwise). */
     private function find(Request $request, string $id): Section
     {
         return Section::where('center_id', $this->centerId($request))->findOrFail($id);
@@ -46,6 +47,11 @@ class ClassController extends CenterScopedController
         ];
     }
 
+    /**
+     * List classes.
+     *
+     * GET /api/v1/center/classes
+     */
     public function index(Request $request): JsonResponse
     {
         $query = Section::where('center_id', $this->centerId($request))->with(self::RELATIONS)->withCount('students')->orderBy('name');
@@ -62,6 +68,11 @@ class ClassController extends CenterScopedController
         return response()->json($query->paginate(100));
     }
 
+    /**
+     * Create a class.
+     *
+     * POST /api/v1/center/classes
+     */
     public function store(Request $request): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -76,6 +87,11 @@ class ClassController extends CenterScopedController
         return response()->json(['data' => $class->fresh(self::RELATIONS)->loadCount('students')], 201);
     }
 
+    /**
+     * Show one class.
+     *
+     * GET /api/v1/center/classes/{id}
+     */
     public function show(Request $request, string $id): JsonResponse
     {
         $class = $this->find($request, $id)->load([...self::RELATIONS, 'students' => fn ($q) => $q->select('users.id', 'name', 'code', 'grade_level', 'active')->orderBy('name')])->loadCount('students');
@@ -83,6 +99,11 @@ class ClassController extends CenterScopedController
         return response()->json(['data' => $class]);
     }
 
+    /**
+     * Update a class.
+     *
+     * PUT|PATCH /api/v1/center/classes/{id}
+     */
     public function update(Request $request, string $id): JsonResponse
     {
         $class = $this->find($request, $id);
@@ -104,6 +125,11 @@ class ClassController extends CenterScopedController
         return response()->json(['data' => $class->fresh(self::RELATIONS)->loadCount('students')]);
     }
 
+    /**
+     * Delete a class.
+     *
+     * DELETE /api/v1/center/classes/{id}
+     */
     public function destroy(Request $request, string $id): JsonResponse
     {
         $class = $this->find($request, $id);
@@ -115,6 +141,11 @@ class ClassController extends CenterScopedController
         return response()->json(['message' => 'Deleted.']);
     }
 
+    /**
+     * Enrol students into a class, respecting its capacity.
+     *
+     * POST /api/v1/center/classes/{class}/students
+     */
     public function enroll(Request $request, string $id): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -132,6 +163,11 @@ class ClassController extends CenterScopedController
         return response()->json(['data' => $class->load([...self::RELATIONS, 'students:id,name,code,grade_level,active'])->loadCount('students'), 'enrolled' => count($new)]);
     }
 
+    /**
+     * Remove a student from a class.
+     *
+     * DELETE /api/v1/center/classes/{class}/students/{student}
+     */
     public function unenroll(Request $request, string $id, string $student): JsonResponse
     {
         $class = $this->find($request, $id);

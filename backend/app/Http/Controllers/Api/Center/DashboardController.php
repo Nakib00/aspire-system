@@ -9,8 +9,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Center Admin dashboard: counts, today's classes, items needing attention and enrolment by subject.
+ *
+ * GET /api/v1/center/dashboard
+ */
 class DashboardController extends CenterScopedController
 {
+    /** Build the dashboard payload for the admin's center. */
     public function __invoke(Request $request): JsonResponse
     {
         $centerId = $this->centerId($request);

@@ -8,23 +8,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
+/** Center Admin CRUD for students and their guardians. */
 class StudentController extends PersonController
 {
+    /** Manages `student` users. */
     protected function role(): string
     {
         return 'student';
     }
 
+    /** Student codes start with `STU`. */
     protected function codePrefix(): string
     {
         return 'STU';
     }
 
+    /** Students never sign in. */
     protected function canSignIn(): bool
     {
         return false;
     }
 
+    /** Eager-load guardians and classes. */
     protected function relations(): array
     {
         return ['parents', 'studentSections.subject'];
@@ -45,6 +50,7 @@ class StudentController extends PersonController
         ];
     }
 
+    /** Adds guardian validation to the student rules. */
     protected function extraRules(Request $request, int $centerId, ?User $person): array
     {
         if (is_array($request->input('guardians'))) {
@@ -58,6 +64,7 @@ class StudentController extends PersonController
         ] + $this->guardianRules($centerId, 'guardians.*.');
     }
 
+    /** Link the guardian supplied with the student form. */
     protected function afterSave(Request $request, int $centerId, User $person, bool $created): void
     {
         foreach ($request->input('guardians', []) as $guardian) {
@@ -77,6 +84,11 @@ class StudentController extends PersonController
         $student->parents()->syncWithoutDetaching([$parent->id => ['relationship' => $guardian['relationship'] ?? null]]);
     }
 
+    /**
+     * Link an existing or newly created parent to a student.
+     *
+     * POST /api/v1/center/students/{student}/guardians
+     */
     public function addGuardian(Request $request, string $id): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -90,6 +102,11 @@ class StudentController extends PersonController
         return response()->json(['data' => $student->fresh($this->relations())], 201);
     }
 
+    /**
+     * Unlink a parent from a student.
+     *
+     * DELETE /api/v1/center/students/{student}/guardians/{parent}
+     */
     public function removeGuardian(Request $request, string $id, string $parent): JsonResponse
     {
         $student = $this->find($request, $id);

@@ -8,10 +8,16 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Super Admin management of centers (tenants).
+ *
+ * Only users with the `super_admin` role may call these endpoints.
+ */
 class CenterController extends Controller
 {
     private const DAYS = ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
 
+    /** Abort with 403 unless the signed-in user is a Super Admin. */
     private function authorizeAdmin(Request $request): void
     {
         abort_unless($request->user()->role === 'super_admin', 403);
@@ -43,6 +49,11 @@ class CenterController extends Controller
         ];
     }
 
+    /**
+     * List centers.
+     *
+     * GET /api/v1/centers
+     */
     public function index(Request $request): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -53,6 +64,11 @@ class CenterController extends Controller
         );
     }
 
+    /**
+     * Create a center.
+     *
+     * POST /api/v1/centers
+     */
     public function store(Request $request): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -66,6 +82,11 @@ class CenterController extends Controller
         return response()->json(['data' => $center->fresh()], 201);
     }
 
+    /**
+     * Show one center.
+     *
+     * GET /api/v1/centers/{id}
+     */
     public function show(Request $request, Center $center): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -73,6 +94,11 @@ class CenterController extends Controller
         return response()->json(['data' => $center->loadCount('users')->load(['users' => fn ($query) => $query->where('role', 'center_admin')])]);
     }
 
+    /**
+     * Update a center.
+     *
+     * PUT|PATCH /api/v1/centers/{id}
+     */
     public function update(Request $request, Center $center): JsonResponse
     {
         $this->authorizeAdmin($request);
