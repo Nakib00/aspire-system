@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
+/** Teacher CRUD for assignments, including file attachments. */
 class AssignmentController extends TeacherScopedController
 {
     private const MAX_FILES = 8;
@@ -38,12 +39,18 @@ class AssignmentController extends TeacherScopedController
         ];
     }
 
+    /** Eager-load section, subject and attachments and add submission/graded counts. */
     private function withStats($query)
     {
         return $query->with(['section:id,name,subject_id', 'section.subject:id,name', 'attachments'])
             ->withCount(['submissions', 'submissions as graded_count' => fn ($q) => $q->whereHas('grade')]);
     }
 
+    /**
+     * List assignments.
+     *
+     * GET /api/v1/teacher/assignments
+     */
     public function index(Request $request): JsonResponse
     {
         $teacherId = $this->teacherId($request);
@@ -61,6 +68,11 @@ class AssignmentController extends TeacherScopedController
         return response()->json($assignments);
     }
 
+    /**
+     * Create a assignment.
+     *
+     * POST /api/v1/teacher/assignments
+     */
     public function store(Request $request): JsonResponse
     {
         $teacherId = $this->teacherId($request);
@@ -70,6 +82,11 @@ class AssignmentController extends TeacherScopedController
         return response()->json(['data' => $this->withStats(Assignment::whereKey($assignment->id))->first()], 201);
     }
 
+    /**
+     * Show one assignment.
+     *
+     * GET /api/v1/teacher/assignments/{id}
+     */
     public function show(Request $request, string $id): JsonResponse
     {
         $this->myAssignment($request, $id);
@@ -77,6 +94,11 @@ class AssignmentController extends TeacherScopedController
         return response()->json(['data' => $this->withStats(Assignment::whereKey($id))->first()]);
     }
 
+    /**
+     * Update a assignment.
+     *
+     * PUT|PATCH /api/v1/teacher/assignments/{id}
+     */
     public function update(Request $request, string $id): JsonResponse
     {
         $assignment = $this->myAssignment($request, $id);
@@ -85,6 +107,11 @@ class AssignmentController extends TeacherScopedController
         return response()->json(['data' => $this->withStats(Assignment::whereKey($id))->first()]);
     }
 
+    /**
+     * Delete a assignment.
+     *
+     * DELETE /api/v1/teacher/assignments/{id}
+     */
     public function destroy(Request $request, string $id): JsonResponse
     {
         $assignment = $this->myAssignment($request, $id);
@@ -98,6 +125,11 @@ class AssignmentController extends TeacherScopedController
         return response()->json(['message' => 'Deleted.']);
     }
 
+    /**
+     * Attach a PDF or image (max 10 MB, up to 8 files).
+     *
+     * POST /api/v1/teacher/assignments/{assignment}/attachments
+     */
     public function addAttachment(Request $request, string $id): JsonResponse
     {
         $assignment = $this->myAssignment($request, $id);
@@ -117,6 +149,11 @@ class AssignmentController extends TeacherScopedController
         return response()->json(['data' => $attachment], 201);
     }
 
+    /**
+     * Remove an attachment and delete its stored file.
+     *
+     * DELETE /api/v1/teacher/assignments/{assignment}/attachments/{attachment}
+     */
     public function removeAttachment(Request $request, string $id, string $attachment): JsonResponse
     {
         $assignment = $this->myAssignment($request, $id);

@@ -12,4 +12,3 @@ Route::prefix('portal/student')->group(function (): void {
     Route::get('results', [StudentPortalController::class, 'results']);
     Route::get('attendance', [StudentPortalController::class, 'attendance']);
 });
-

@@ -18,6 +18,7 @@ class StudentPortalController extends Controller
 {
     use SavesSubmissions, ShowsStudentWork;
 
+    /** The signed-in student (403 for any other role). */
     private function student(Request $request): User
     {
         abort_unless($request->user()->role === 'student', 403);
@@ -25,16 +26,23 @@ class StudentPortalController extends Controller
         return $request->user();
     }
 
+    /** A class the student is enrolled in (404 otherwise). */
     private function myClass(User $student, string|int $id): Section
     {
         return $student->studentSections()->where('sections.status', 'active')->findOrFail($id);
     }
 
+    /** Whether an assignment still accepts submissions. */
     private function isOpen(Assignment $a): bool
     {
         return $a->status === 'published' && ! $a->submission;
     }
 
+    /**
+     * Dashboard payload: stats, work due soon, missing work, announcements and recent results.
+     *
+     * GET /api/v1/portal/student/overview
+     */
     public function overview(Request $request): JsonResponse
     {
         $student = $this->student($request);
@@ -61,6 +69,11 @@ class StudentPortalController extends Controller
         ]]);
     }
 
+    /**
+     * Classes the student is enrolled in.
+     *
+     * GET /api/v1/portal/student/classes
+     */
     public function classes(Request $request): JsonResponse
     {
         $student = $this->student($request);
@@ -75,6 +88,11 @@ class StudentPortalController extends Controller
             ->setAttribute('latest_announcement', ($latest[$c->id] ?? collect())->first()))->values()]);
     }
 
+    /**
+     * One class with its teachers, announcements, assignments and attendance.
+     *
+     * GET /api/v1/portal/student/classes/{class}
+     */
     public function showClass(Request $request, string $class): JsonResponse
     {
         $student = $this->student($request);
@@ -96,6 +114,11 @@ class StudentPortalController extends Controller
         return response()->json(['data' => $this->studentWork($this->student($request))->values()]);
     }
 
+    /**
+     * Released grades and feedback.
+     *
+     * GET /api/v1/portal/student/results
+     */
     public function results(Request $request): JsonResponse
     {
         $work = $this->studentWork($this->student($request))->filter(fn ($a) => $a->grade)->values();
@@ -106,6 +129,11 @@ class StudentPortalController extends Controller
         return response()->json(['data' => ['results' => $rows, 'by_class' => $byClass, 'average' => $rows->count() ? (int) round($rows->avg('percent')) : null]]);
     }
 
+    /**
+     * Attendance history and totals.
+     *
+     * GET /api/v1/portal/student/attendance
+     */
     public function attendance(Request $request): JsonResponse
     {
         $student = $this->student($request);
@@ -118,6 +146,11 @@ class StudentPortalController extends Controller
         ]]);
     }
 
+    /**
+     * Submit (or replace) the student's own work.
+     *
+     * POST /api/v1/portal/student/assignments/{assignment}/submission
+     */
     public function submit(Request $request, string $assignment): JsonResponse
     {
         $student = $this->student($request);

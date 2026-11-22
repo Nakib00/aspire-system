@@ -3,8 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\URL;
 
+/**
+ * A private file (PDF or image) attached to an assignment. Exposed to clients only through short-lived signed URLs.
+ *
+ * Model in the MVC architecture: owns the data, relations and casts for this table.
+ */
 class AssignmentAttachment extends Model
 {
     protected $guarded = ['id'];
@@ -13,7 +19,8 @@ class AssignmentAttachment extends Model
 
     protected $hidden = ['path'];
 
-    public function assignment()
+    /** The assignment this AssignmentAttachment belongs to. */
+    public function assignment(): BelongsTo
     {
         return $this->belongsTo(Assignment::class);
     }

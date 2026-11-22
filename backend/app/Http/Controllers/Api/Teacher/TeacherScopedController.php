@@ -7,8 +7,14 @@ use App\Models\Assignment;
 use App\Models\Section;
 use Illuminate\Http\Request;
 
+/**
+ * Base controller for every `/teacher/*` endpoint.
+ *
+ * Guarantees the caller is a teacher and offers scoped lookups so teachers only touch their own classes and assignments.
+ */
 abstract class TeacherScopedController extends Controller
 {
+    /** Id of the signed-in teacher (403 for any other role). */
     protected function teacherId(Request $request): int
     {
         abort_unless($request->user()->role === 'teacher', 403);

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
+/** Teacher attendance sheets and reports for their classes. */
 class AttendanceController extends TeacherScopedController
 {
     /** Attendance sheet for one class on one day: every enrolled student with their mark (if any). */
@@ -27,6 +28,11 @@ class AttendanceController extends TeacherScopedController
         ]]);
     }
 
+    /**
+     * Save the attendance of every student of a class for one day.
+     *
+     * PUT /api/v1/teacher/classes/{class}/attendance
+     */
     public function store(Request $request, string $class): JsonResponse
     {
         $section = $this->myClass($request, $class);

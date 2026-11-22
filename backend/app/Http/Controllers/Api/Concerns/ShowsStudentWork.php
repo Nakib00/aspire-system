@@ -28,6 +28,7 @@ trait ShowsStudentWork
         return $assignments->map(fn (Assignment $a) => $this->presentWork($a, $submissions[$a->id] ?? null));
     }
 
+    /** Attach the student's submission and (released) grade to an assignment for display. */
     protected function presentWork(Assignment $assignment, ?Submission $submission): Assignment
     {
         $grade = $submission?->grade?->published ? $submission->grade : null;

@@ -29,4 +29,3 @@ Route::prefix('teacher')->group(function (): void {
     Route::put('submissions/{submission}/grade', [SubmissionController::class, 'grade']);
     Route::delete('submissions/{submission}/grade', [SubmissionController::class, 'removeGrade']);
 });
-

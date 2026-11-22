@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
+/** Shared behaviour for storing a student's submission (used by student, parent and teacher endpoints). */
 trait SavesSubmissions
 {
     /** Create or replace a student's submission for an assignment from the request (file and/or text). */

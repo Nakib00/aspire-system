@@ -6,8 +6,10 @@ use App\Models\Announcement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/** Teacher announcements for the classes they teach. */
 class AnnouncementController extends TeacherScopedController
 {
+    /** An announcement written by the signed-in teacher (404 otherwise). */
     private function mine(Request $request, string $id): Announcement
     {
         $this->teacherId($request);
@@ -15,6 +17,11 @@ class AnnouncementController extends TeacherScopedController
         return Announcement::whereIn('section_id', $request->user()->teacherSections()->select('sections.id'))->findOrFail($id);
     }
 
+    /**
+     * List a class's announcements.
+     *
+     * GET /api/v1/teacher/classes/{class}/announcements
+     */
     public function index(Request $request, string $class): JsonResponse
     {
         $section = $this->myClass($request, $class);
@@ -23,6 +30,11 @@ class AnnouncementController extends TeacherScopedController
         return response()->json($items);
     }
 
+    /**
+     * Post an announcement to a class.
+     *
+     * POST /api/v1/teacher/classes/{class}/announcements
+     */
     public function store(Request $request, string $class): JsonResponse
     {
         $section = $this->myClass($request, $class);
@@ -32,6 +44,11 @@ class AnnouncementController extends TeacherScopedController
         return response()->json(['data' => $item->load('teacher:id,name')], 201);
     }
 
+    /**
+     * Edit an announcement.
+     *
+     * PATCH /api/v1/teacher/announcements/{announcement}
+     */
     public function update(Request $request, string $id): JsonResponse
     {
         $item = $this->mine($request, $id);
@@ -40,6 +57,11 @@ class AnnouncementController extends TeacherScopedController
         return response()->json(['data' => $item->load('teacher:id,name')]);
     }
 
+    /**
+     * Delete an announcement.
+     *
+     * DELETE /api/v1/teacher/announcements/{announcement}
+     */
     public function destroy(Request $request, string $id): JsonResponse
     {
         $this->mine($request, $id)->delete();

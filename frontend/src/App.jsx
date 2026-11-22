@@ -1,14 +1,14 @@
-﻿import { useCallback, useState } from 'react'
-import './App.css'
-import './teacher.css'
-import { request } from './api'
-import CenterAdminWorkspace from './CenterAdmin'
-import Login from './Login'
-import { ParentPortal } from './Portals'
-import StudentPortal from './Student'
-import SuperAdminWorkspace from './SuperAdmin'
-import TeacherWorkspace from './Teacher'
+﻿import './views/styles/App.css'
+import './views/styles/teacher.css'
+import { useSession } from './controllers/useSession'
+import CenterAdminWorkspace from './views/pages/CenterAdmin'
+import Login from './views/pages/Login'
+import { ParentPortal } from './views/pages/Portals'
+import StudentPortal from './views/pages/Student'
+import SuperAdminWorkspace from './views/pages/SuperAdmin'
+import TeacherWorkspace from './views/pages/Teacher'
 
+/** Maps a user's role (as returned by the API) to the workspace view they see. */
 const WORKSPACES = {
   super_admin: SuperAdminWorkspace,
   center_admin: CenterAdminWorkspace,
@@ -17,21 +17,14 @@ const WORKSPACES = {
   student: StudentPortal,
 }
 
+/**
+ * Application root and front controller.
+ *
+ * Decides, from the authentication state held by {@link useSession}, whether to
+ * show the sign-in view or the workspace that matches the signed-in role.
+ */
 export default function App() {
-  const [session, setSession] = useState(() => { try { return JSON.parse(sessionStorage.getItem('aspire_session') || 'null') } catch { return null } })
-  const login = (data) => {
-    sessionStorage.setItem('aspire_session', JSON.stringify({ token: data.token, user: data.user }))
-    setSession({ token: data.token, user: data.user })
-  }
-  const logout = useCallback(async (notifyServer = true) => {
-    const current = sessionStorage.getItem('aspire_session')
-    if (notifyServer && current) {
-      try { await request('/logout', { method: 'POST', token: JSON.parse(current).token }) } catch { /* clear locally even if the server is unreachable */ }
-    }
-    sessionStorage.removeItem('aspire_session')
-    setSession(null)
-  }, [])
-
+  const { session, login, logout } = useSession()
   const Workspace = session && WORKSPACES[session.user.role]
   return Workspace ? <Workspace session={session} onLogout={logout} /> : <Login onLogin={login} />
 }

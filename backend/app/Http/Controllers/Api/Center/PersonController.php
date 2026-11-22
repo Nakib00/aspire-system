@@ -38,13 +38,16 @@ abstract class PersonController extends CenterScopedController
         return [];
     }
 
+    /** Hook run inside the save transaction after the person is created or updated. */
     protected function afterSave(Request $request, int $centerId, User $person, bool $created): void {}
 
+    /** Base query restricted to this role and center. */
     protected function query(int $centerId): Builder
     {
         return User::query()->where('center_id', $centerId)->where('role', $this->role());
     }
 
+    /** Find a person of this role in the admin's center (404 otherwise). */
     protected function find(Request $request, int|string $id): User
     {
         return $this->query($this->centerId($request))->with($this->relations())->findOrFail($id);
@@ -74,6 +77,11 @@ abstract class PersonController extends CenterScopedController
         return $rules + $this->extraRules($request, $centerId, $person);
     }
 
+    /**
+     * List people.
+     *
+     * GET /api/v1/center/{people}
+     */
     public function index(Request $request): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -88,6 +96,11 @@ abstract class PersonController extends CenterScopedController
         return response()->json($query->paginate(50));
     }
 
+    /**
+     * Create a person.
+     *
+     * POST /api/v1/center/{people}
+     */
     public function store(Request $request): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -111,11 +124,21 @@ abstract class PersonController extends CenterScopedController
         return response()->json(['data' => $person->fresh($this->relations())], 201);
     }
 
+    /**
+     * Show one person.
+     *
+     * GET /api/v1/center/{people}/{id}
+     */
     public function show(Request $request, string $id): JsonResponse
     {
         return response()->json(['data' => $this->find($request, $id)]);
     }
 
+    /**
+     * Update a person.
+     *
+     * PUT|PATCH /api/v1/center/{people}/{id}
+     */
     public function update(Request $request, string $id): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -141,6 +164,11 @@ abstract class PersonController extends CenterScopedController
         return response()->json(['data' => $person->fresh($this->relations())]);
     }
 
+    /**
+     * Delete a person.
+     *
+     * DELETE /api/v1/center/{people}/{id}
+     */
     public function destroy(Request $request, string $id): JsonResponse
     {
         $person = $this->find($request, $id);

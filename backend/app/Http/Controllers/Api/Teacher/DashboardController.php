@@ -8,8 +8,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Teacher dashboard: today's classes, submissions waiting for review and upcoming deadlines.
+ *
+ * GET /api/v1/teacher/dashboard
+ */
 class DashboardController extends TeacherScopedController
 {
+    /** Build the dashboard payload for the signed-in teacher. */
     public function __invoke(Request $request): JsonResponse
     {
         $teacherId = $this->teacherId($request);

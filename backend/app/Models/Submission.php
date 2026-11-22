@@ -3,8 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\URL;
 
+/**
+ * A student's answer to an assignment (text and/or file). Replaced when the student resubmits.
+ *
+ * Model in the MVC architecture: owns the data, relations and casts for this table.
+ */
 class Submission extends Model
 {
     protected $guarded = ['id'];
@@ -25,22 +32,26 @@ class Submission extends Model
             : null;
     }
 
-    public function assignment()
+    /** The assignment this Submission belongs to. */
+    public function assignment(): BelongsTo
     {
         return $this->belongsTo(Assignment::class);
     }
 
-    public function student()
+    /** The student the work belongs to. */
+    public function student(): BelongsTo
     {
         return $this->belongsTo(User::class, 'student_id');
     }
 
-    public function submittedBy()
+    /** Who uploaded the work (the student, a parent or a teacher). */
+    public function submittedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'submitted_by');
     }
 
-    public function grade()
+    /** The grade record of this Submission. */
+    public function grade(): HasOne
     {
         return $this->hasOne(Grade::class);
     }

@@ -10,10 +10,12 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/** Teacher review of student submissions: roster, grading and releasing grades. */
 class SubmissionController extends TeacherScopedController
 {
     use SavesSubmissions;
 
+    /** A submission to one of the teacher's assignments (404 otherwise). */
     private function mySubmission(Request $request, string $id): Submission
     {
         $this->teacherId($request);
@@ -36,6 +38,7 @@ class SubmissionController extends TeacherScopedController
         ];
     }
 
+    /** Build the roster response for an assignment. */
     private function rosterFor(Assignment $assignment): JsonResponse
     {
         $assignment->load(['section:id,name,subject_id', 'section.subject:id,name', 'attachments']);
@@ -59,6 +62,11 @@ class SubmissionController extends TeacherScopedController
         ]]);
     }
 
+    /**
+     * Every enrolled student with their submission and grade.
+     *
+     * GET /api/v1/teacher/assignments/{assignment}/submissions
+     */
     public function roster(Request $request, string $assignment): JsonResponse
     {
         return $this->rosterFor($this->myAssignment($request, $assignment));
@@ -74,6 +82,11 @@ class SubmissionController extends TeacherScopedController
         return $this->rosterFor($assignment);
     }
 
+    /**
+     * One submission; marks it as opened.
+     *
+     * GET /api/v1/teacher/submissions/{submission}
+     */
     public function show(Request $request, string $id): JsonResponse
     {
         $submission = $this->mySubmission($request, $id);
@@ -84,6 +97,11 @@ class SubmissionController extends TeacherScopedController
         return response()->json(['data' => $this->row($student, $submission->load(['grade', 'submittedBy:id,name']))]);
     }
 
+    /**
+     * Create or update the grade and feedback for a submission.
+     *
+     * PUT /api/v1/teacher/submissions/{submission}/grade
+     */
     public function grade(Request $request, string $id): JsonResponse
     {
         $submission = $this->mySubmission($request, $id);
@@ -99,6 +117,11 @@ class SubmissionController extends TeacherScopedController
         return response()->json(['data' => $this->row($submission->student, $submission->load(['grade', 'submittedBy:id,name']))]);
     }
 
+    /**
+     * Remove a grade.
+     *
+     * DELETE /api/v1/teacher/submissions/{submission}/grade
+     */
     public function removeGrade(Request $request, string $id): JsonResponse
     {
         $submission = $this->mySubmission($request, $id);

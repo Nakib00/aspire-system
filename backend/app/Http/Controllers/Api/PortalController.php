@@ -14,10 +14,16 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/** Read/submit endpoints for the Parent and Teacher dashboards. */
 class PortalController extends Controller
 {
     use SavesSubmissions, ShowsStudentWork;
 
+    /**
+     * Announcements visible to the signed-in parent or student.
+     *
+     * GET /api/v1/portal/announcements
+     */
     public function announcements(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -29,6 +35,7 @@ class PortalController extends Controller
         return response()->json(['data' => $items]);
     }
 
+    /** Resolve a child of the signed-in parent (404 for anyone else's child). */
     private function myChild(Request $request, string $child): User
     {
         abort_unless($request->user()->role === 'parent', 403);
@@ -60,6 +67,11 @@ class PortalController extends Controller
         return response()->json(['data' => $this->studentWork($this->myChild($request, $child))->values()]);
     }
 
+    /**
+     * Submit work for a child on the parent's behalf.
+     *
+     * POST /api/v1/portal/parent/children/{child}/assignments/{assignment}/submission
+     */
     public function submit(Request $request, string $child, string $assignment): JsonResponse
     {
         $student = $this->myChild($request, $child);

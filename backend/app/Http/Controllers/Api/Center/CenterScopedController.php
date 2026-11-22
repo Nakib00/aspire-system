@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Api\Center;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+/**
+ * Base controller for every `/center/*` endpoint.
+ *
+ * Guarantees the caller is a Center Admin and exposes their center id so queries are always scoped to one tenant.
+ */
 abstract class CenterScopedController extends Controller
 {
     protected const DAYS = ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];

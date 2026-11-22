@@ -20,4 +20,3 @@ Route::prefix('center')->group(function (): void {
     Route::post('classes/{class}/students', [ClassController::class, 'enroll']);
     Route::delete('classes/{class}/students/{student}', [ClassController::class, 'unenroll']);
 });
-

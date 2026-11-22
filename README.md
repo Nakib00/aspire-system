@@ -47,14 +47,13 @@ Each user logs in with their assigned role and sees only the features permitted 
 
 ## Tech Stack
 
-> Replace this with the technologies your team actually uses, for example:
->
-> - **Frontend:** HTML, CSS, JavaScript
-> - **Backend:** Node.js / PHP / Django
-> - **Database:** MySQL / MongoDB
-> - **Version Control:** Git and GitHub
-> - **Project Management:** Trello
-> - **Communication:** Discord
+- **Frontend:** React 19, Vite
+- **Backend:** PHP 8.3+, Laravel 13 (REST API, JWT authentication)
+- **Database:** SQLite
+- **Testing / quality:** PHPUnit, Laravel Pint (PSR-12), oxlint
+- **Version Control:** Git and GitHub
+
+Full project documentation is in the **[GitHub Wiki](https://github.com/Nakib00/aspire-system/wiki)** (source in [`wiki/`](wiki/Home.md)): setup guide, architecture, database, API, coding standards, Git and code-review workflow, testing, UI heuristics, user stories, SRS, use cases, DFD, state diagrams and SDS. Short engineering notes: [Architecture (MVC)](docs/ARCHITECTURE.md), [Coding standards](docs/CODING_STANDARDS.md), [UI and Nielsen heuristics](docs/UI_HEURISTICS.md).
 
 ---
 

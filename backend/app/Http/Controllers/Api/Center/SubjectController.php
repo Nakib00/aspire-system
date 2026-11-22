@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
+/** Center Admin CRUD for subjects offered by the center. */
 class SubjectController extends CenterScopedController
 {
+    /** Find a subject of the admin's own center (404 otherwise). */
     private function find(Request $request, string $id): Subject
     {
         return Subject::where('center_id', $this->centerId($request))->findOrFail($id);
@@ -28,6 +30,11 @@ class SubjectController extends CenterScopedController
         ];
     }
 
+    /**
+     * List subjects.
+     *
+     * GET /api/v1/center/subjects
+     */
     public function index(Request $request): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -38,6 +45,11 @@ class SubjectController extends CenterScopedController
         return response()->json($subjects);
     }
 
+    /**
+     * Create a subject.
+     *
+     * POST /api/v1/center/subjects
+     */
     public function store(Request $request): JsonResponse
     {
         $centerId = $this->centerId($request);
@@ -46,11 +58,21 @@ class SubjectController extends CenterScopedController
         return response()->json(['data' => Subject::create($data + ['center_id' => $centerId])->fresh()], 201);
     }
 
+    /**
+     * Show one subject.
+     *
+     * GET /api/v1/center/subjects/{id}
+     */
     public function show(Request $request, string $id): JsonResponse
     {
         return response()->json(['data' => $this->find($request, $id)->load('sections')]);
     }
 
+    /**
+     * Update a subject.
+     *
+     * PUT|PATCH /api/v1/center/subjects/{id}
+     */
     public function update(Request $request, string $id): JsonResponse
     {
         $subject = $this->find($request, $id);
@@ -65,6 +87,11 @@ class SubjectController extends CenterScopedController
         return response()->json(['data' => $subject->fresh()]);
     }
 
+    /**
+     * Delete a subject.
+     *
+     * DELETE /api/v1/center/subjects/{id}
+     */
     public function destroy(Request $request, string $id): JsonResponse
     {
         $subject = $this->find($request, $id);
