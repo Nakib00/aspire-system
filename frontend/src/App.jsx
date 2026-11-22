@@ -1,16 +1,20 @@
 ﻿import { useCallback, useState } from 'react'
 import './App.css'
+import './teacher.css'
 import { request } from './api'
 import CenterAdminWorkspace from './CenterAdmin'
 import Login from './Login'
-import { ParentPortal, TeacherPortal } from './Portals'
+import { ParentPortal } from './Portals'
+import StudentPortal from './Student'
 import SuperAdminWorkspace from './SuperAdmin'
+import TeacherWorkspace from './Teacher'
 
 const WORKSPACES = {
   super_admin: SuperAdminWorkspace,
   center_admin: CenterAdminWorkspace,
-  teacher: TeacherPortal,
+  teacher: TeacherWorkspace,
   parent: ParentPortal,
+  student: StudentPortal,
 }
 
 export default function App() {

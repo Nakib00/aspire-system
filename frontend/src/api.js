@@ -7,10 +7,10 @@ export async function request(path, { token, method = 'GET', body } = {}) {
       method,
       headers: {
         Accept: 'application/json',
-        ...(body ? { 'Content-Type': 'application/json' } : {}),
+        ...(body && !(body instanceof FormData) ? { 'Content-Type': 'application/json' } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      ...(body ? { body: JSON.stringify(body) } : {}),
+      ...(body ? { body: body instanceof FormData ? body : JSON.stringify(body) } : {}),
     })
   } catch {
     throw new Error('Unable to reach the server. Check that the backend is running and try again.')
@@ -67,3 +67,28 @@ export function formatHours(center) {
   if (!center.opens_at || !center.closes_at) return null
   return `${center.opens_at} – ${center.closes_at}`
 }
+
+export function formatDateTime(value) {
+  if (!value) return '—'
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+}
+
+/** "in 3 days", "due today", "2 days overdue" for a due date. */
+export function dueLabel(value) {
+  if (!value) return ''
+  const days = Math.round((new Date(value).getTime() - Date.now()) / 86400000)
+  if (days === 0) return 'Due today'
+  return days > 0 ? `Due in ${days} day${days > 1 ? 's' : ''}` : `${-days} day${days < -1 ? 's' : ''} overdue`
+}
+
+export const toLocalInput = (value) => {
+  if (!value) return ''
+  const d = new Date(value)
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+export const fileSize = (bytes = 0) => (bytes > 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`)
+export const isImageName = (name = '') => /\.(png|jpe?g|webp|gif)$/i.test(name)
+export const isPdfName = (name = '') => /\.pdf$/i.test(name)

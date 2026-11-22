@@ -8,6 +8,11 @@ class Grade extends Model
 {
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return ['marks' => 'float', 'published' => 'boolean'];
+    }
+
     public function submission()
     {
         return $this->belongsTo(Submission::class);

@@ -1,19 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { request } from './api'
+import { AnnouncementFeed } from './Announcements'
+import AssignmentContent, { FilePreview } from './AssignmentContent'
+import { dueLabel, formatDateTime, request } from './api'
 import { scheduleText } from './helpers'
 import { PageHeader, Shell, Stat } from './shared'
-import { Avatar, Empty, Icon, Skeleton } from './ui'
+import { Avatar, Empty, Icon, Skeleton, Toast } from './ui'
 
-function usePortal(path, token, onLogout) {
-  const [data, setData] = useState(null)
-  const [error, setError] = useState('')
-  const load = useCallback(async () => {
-    setError('')
-    try { setData((await request(path, { token })).data) } catch (err) { if (err.status === 401) onLogout(false); else setError(err.message) }
-  }, [path, token, onLogout])
-  useEffect(() => { Promise.resolve().then(load) }, [load])
-  return { data, error, load }
-}
+const NAV = [['home', 'overview', 'My family'], ['assignments', 'file', 'Assignments'], ['announcements', 'book', 'Announcements']]
 
 function CenterCard({ center }) {
   if (!center) return null
@@ -39,57 +32,154 @@ function ClassLine({ c }) {
   )
 }
 
-export function ParentPortal({ session, onLogout }) {
-  const { data, error, load } = usePortal('/portal/parent', session.token, onLogout)
-  const children = data?.children || []
+function AttendanceChips({ attendance }) {
+  const total = Object.values(attendance || {}).reduce((a, b) => a + b, 0)
+  if (!total) return <p className="muted-cell pad-all">No attendance recorded in the last 60 days.</p>
+  const counted = attendance.present + attendance.late + attendance.absent
+  const rate = counted ? Math.round(((attendance.present + attendance.late) / counted) * 100) : null
   return (
-    <Shell nav={[['home', 'overview', 'My family']]} page="home" go={() => {}} user={session.user} roleLabel="Parent" centerName={session.user.center?.name} onLogout={onLogout}>
-      <PageHeader title={`Hello, ${session.user.name.split(' ')[0]}`} text="Follow your children’s classes and schedules in one place." />
-      {error && <div className="alert alert-error" role="alert"><Icon name="alert" size={17} />{error}<button className="link" onClick={load}>Try again</button></div>}
-      <div className="stats stats-3">
-        <Stat icon="cap" tone="indigo" label="Children" value={data ? children.length : '—'} note="linked to your account" onClick={() => {}} />
-        <Stat icon="book" tone="green" label="Classes" value={data ? children.reduce((n, c) => n + c.student_sections.length, 0) : '—'} note="across all children" onClick={() => {}} />
-        <Stat icon="person" tone="amber" label="Your ID" value={session.user.code || '—'} note="share with your center" onClick={() => {}} />
-      </div>
-      {!data ? <section className="card"><Skeleton rows={4} /></section> : children.length ? (
-        <div className="split">
-          <div className="stack-cards">
-            {children.map((child) => (
-              <section className="card" key={child.id}>
-                <header className="card-head"><div className="cell"><Avatar name={child.name} /><div><h2>{child.name}</h2><p>{child.code}{child.grade_level ? ` · Grade ${child.grade_level}` : ''}{child.pivot?.relationship ? ` · ${child.pivot.relationship}` : ''}</p></div></div></header>
-                {child.student_sections.length ? <ul className="mini-list">{child.student_sections.map((c) => <ClassLine key={c.id} c={c} />)}</ul> : <Empty icon="book" title="Not enrolled yet" text="Classes will appear here once your center enrolls this child." />}
-              </section>
-            ))}
-          </div>
-          <CenterCard center={data.profile.center} />
-        </div>
-      ) : <section className="card"><Empty icon="cap" title="No children linked yet" text="Ask your center administrator to link your children to your account." /></section>}
-    </Shell>
+    <div className="att-chips">
+      <span className="tally tally-present"><b>{attendance.present}</b>Present</span>
+      <span className="tally tally-late"><b>{attendance.late}</b>Late</span>
+      <span className="tally tally-absent"><b>{attendance.absent}</b>Absent</span>
+      <span className="tally tally-excused"><b>{attendance.excused}</b>Excused</span>
+      {rate !== null && <span className="att-rate">{rate}% attendance · last 60 days</span>}
+    </div>
   )
 }
 
-export function TeacherPortal({ session, onLogout }) {
-  const { data, error, load } = usePortal('/portal/teacher', session.token, onLogout)
-  const classes = data?.classes || []
+function statusOf(a) {
+  if (a.grade) return ['success', `Graded · ${a.grade.marks}/${a.max_marks}`]
+  if (a.submission) return [a.submission.status === 'late' ? 'warn' : 'info', a.locked ? 'Submitted · awaiting release' : a.submission.status === 'late' ? 'Submitted late' : 'Submitted']
+  if (a.status === 'closed') return ['muted', 'Closed']
+  return new Date(a.due_at) < new Date() ? ['warn', 'Overdue'] : ['muted', 'Not submitted']
+}
+
+export function AssignmentCard({ a, child, token, onChanged, notify, student = false }) {
+  const [open, setOpen] = useState(false)
+  const [file, setFile] = useState(null)
+  const [text, setText] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [tone, label] = statusOf(a)
+  const canSubmit = a.status === 'published' && !a.locked
+
+  async function submit(e) {
+    e.preventDefault()
+    setBusy(true)
+    try {
+      const body = new FormData()
+      if (file) body.append('file', file)
+      if (text.trim()) body.append('text_answer', text.trim())
+      await request(student ? `/portal/student/assignments/${a.id}/submission` : `/portal/parent/children/${child.id}/assignments/${a.id}/submission`, { token, method: 'POST', body })
+      notify('Work submitted.'); setFile(null); setText(''); await onChanged()
+    } catch (err) { notify(err.message, 'error') } finally { setBusy(false) }
+  }
+
   return (
-    <Shell nav={[['home', 'overview', 'My classes']]} page="home" go={() => {}} user={session.user} roleLabel="Teacher" centerName={session.user.center?.name} onLogout={onLogout}>
-      <PageHeader title={`Hello, ${session.user.name.split(' ')[0]}`} text="Your classes and the students in them." />
-      {error && <div className="alert alert-error" role="alert"><Icon name="alert" size={17} />{error}<button className="link" onClick={load}>Try again</button></div>}
-      <div className="stats stats-3">
-        <Stat icon="book" tone="indigo" label="Classes" value={data ? classes.length : '—'} note="assigned to you" onClick={() => {}} />
-        <Stat icon="cap" tone="teal" label="Students" value={data ? data.students_total : '—'} note="across your classes" onClick={() => {}} />
-        <Stat icon="person" tone="amber" label="Your ID" value={session.user.code || '—'} note="teacher ID" onClick={() => {}} />
-      </div>
-      {!data ? <section className="card"><Skeleton rows={4} /></section> : classes.length ? (
-        <div className="stack-cards">
-          {classes.map((c) => (
-            <section className="card" key={c.id}>
-              <header className="card-head"><div><h2>{c.name}</h2><p>{c.subject?.name}{scheduleText(c) ? ` · ${scheduleText(c)}` : ''}{c.room ? ` · ${c.room}` : ''}</p></div><span className="badge badge-muted">{c.students_count} students</span></header>
-              {c.students.length ? <ul className="chips-list">{c.students.map((s) => <li key={s.id}><Avatar name={s.name} size="sm" /><span><b>{s.name}</b><small>{s.code}</small></span></li>)}</ul> : <p className="muted-cell pad">No students enrolled yet.</p>}
-            </section>
-          ))}
+    <section className="card assignment-card">
+      <button className="assignment-head" onClick={() => setOpen(!open)} aria-expanded={open}>
+        <span className="symbol"><Icon name="file" /></span>
+        <span className="grow"><b>{a.title}</b><small>{a.section?.subject?.name || a.section?.name} · Due {formatDateTime(a.due_at)} · {dueLabel(a.due_at)}</small></span>
+        <span className={`badge badge-${tone}`}><i />{label}</span>
+        <Icon name="chevron" size={16} className={open ? 'turn' : ''} />
+      </button>
+      {open && (
+        <div className="assignment-body">
+          <AssignmentContent assignment={a} />
+
+          {a.grade && (
+            <div className="grade-card"><div><b>{a.grade.marks}<em> / {a.max_marks}</em></b><small>Teacher’s grade</small></div>{a.grade.feedback && <p>“{a.grade.feedback}”</p>}</div>
+          )}
+
+          {a.submission && (
+            <div className="work">
+              <div className="work-meta"><span><Icon name="clock" size={15} />Submitted {formatDateTime(a.submission.submitted_at)}</span></div>
+              {a.submission.text_answer && <p className="answer">{a.submission.text_answer}</p>}
+              <FilePreview url={a.submission.file_url} name={a.submission.original_name} />
+            </div>
+          )}
+
+          {canSubmit ? (
+            <form className="work work-empty" onSubmit={submit}>
+              <h4>{a.submission ? 'Replace submission' : student ? 'Submit your work' : `Submit ${child.name.split(' ')[0]}’s work`}</h4>
+              <label className="dropzone small"><Icon name="upload" size={18} /><span>{file ? file.name : 'Attach a photo or PDF of the work'}</span><input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt" onChange={(e) => setFile(e.target.files[0] || null)} /></label>
+              <textarea rows="2" value={text} onChange={(e) => setText(e.target.value)} placeholder="Or type an answer" aria-label="Typed answer" />
+              <button className="btn btn-primary btn-sm" disabled={busy || (!file && !text.trim())}>{busy ? 'Submitting…' : 'Submit work'}</button>
+            </form>
+          ) : a.locked ? <p className="muted-cell">This work has been graded, so it can’t be changed.</p> : a.status === 'closed' ? <p className="muted-cell">This assignment is closed for submissions.</p> : null}
         </div>
-      ) : <section className="card"><Empty icon="book" title="No classes assigned yet" text="Your center administrator will assign you to classes." /></section>}
-    </Shell>
+      )}
+    </section>
   )
 }
+
+export function ParentPortal({ session, onLogout }) {
+  const token = session.token
+  const [page, setPage] = useState('home')
+  const [data, setData] = useState(null)
+  const [work, setWork] = useState({})
+  const [announcements, setAnnouncements] = useState([])
+  const [error, setError] = useState('')
+  const [toast, setToast] = useState(null)
+
+  const load = useCallback(async () => {
+    setError('')
+    try {
+      const res = (await request('/portal/parent', { token })).data
+      setData(res)
+      setAnnouncements((await request('/portal/announcements', { token })).data)
+      const lists = await Promise.all(res.children.map((c) => request(`/portal/parent/children/${c.id}/assignments`, { token }).then((r) => [c.id, r.data])))
+      setWork(Object.fromEntries(lists))
+    } catch (err) { if (err.status === 401) onLogout(false); else setError(err.message) }
+  }, [token, onLogout])
+  useEffect(() => { Promise.resolve().then(load) }, [load])
+  const notify = useCallback((text, type) => setToast({ text, type }), [])
+  const dismiss = useCallback(() => setToast(null), [])
+
+  const children = data?.children || []
+  const all = Object.values(work).flat()
+  const todo = all.filter((a) => a.status === 'published' && !a.submission && new Date(a.due_at) > new Date()).length
+
+  return (
+    <>
+      <Shell nav={NAV} page={page} go={setPage} user={session.user} roleLabel="Parent" centerName={session.user.center?.name} onLogout={onLogout}>
+        <PageHeader title={page === 'home' ? `Hello, ${session.user.name.split(' ')[0]}` : page === 'announcements' ? 'Announcements' : 'Assignments'} text={page === 'home' ? 'Follow your children’s classes, attendance and schedules in one place.' : page === 'announcements' ? 'Updates from your children’s classes.' : 'See homework, submit work and read your teacher’s feedback.'} />
+        {error && <div className="alert alert-error" role="alert"><Icon name="alert" size={17} />{error}<button className="link" onClick={load}>Try again</button></div>}
+        <div className="stats stats-3">
+          <Stat icon="cap" tone="indigo" label="Children" value={data ? children.length : '—'} note="linked to your account" onClick={() => setPage('home')} />
+          <Stat icon="file" tone={todo ? 'amber' : 'green'} label="To do" value={data ? todo : '—'} note="assignments not yet submitted" onClick={() => setPage('assignments')} />
+          <Stat icon="person" tone="teal" label="Your ID" value={session.user.code || '—'} note="share with your center" onClick={() => setPage('home')} />
+        </div>
+
+        {!data ? <section className="card"><Skeleton rows={4} /></section> : !children.length ? (
+          <section className="card"><Empty icon="cap" title="No children linked yet" text="Ask your center administrator to link your children to your account." /></section>
+        ) : page === 'announcements' ? <section className="card"><AnnouncementFeed items={announcements} /></section> : page === 'home' ? (
+          <div className="split">
+            <div className="stack-cards">
+              {children.map((child) => (
+                <section className="card" key={child.id}>
+                  <header className="card-head"><div className="cell"><Avatar name={child.name} /><div><h2>{child.name}</h2><p>{child.code}{child.grade_level ? ` · Grade ${child.grade_level}` : ''}{child.pivot?.relationship ? ` · ${child.pivot.relationship}` : ''}</p></div></div></header>
+                  <AttendanceChips attendance={child.attendance} />
+                  {child.student_sections.length ? <ul className="mini-list">{child.student_sections.map((c) => <ClassLine key={c.id} c={c} />)}</ul> : <Empty icon="book" title="Not enrolled yet" text="Classes will appear here once your center enrolls this child." />}
+                </section>
+              ))}
+            </div>
+            <CenterCard center={data.profile.center} />
+          </div>
+        ) : (
+          <div className="stack-cards">
+            {children.map((child) => (
+              <div key={child.id} className="child-block">
+                <h3 className="block-title"><Avatar name={child.name} size="sm" />{child.name}</h3>
+                {(work[child.id] || []).length ? (work[child.id] || []).map((a) => <AssignmentCard key={a.id} a={a} child={child} token={token} onChanged={load} notify={notify} />)
+                  : <section className="card"><Empty icon="file" title="No assignments yet" text={`Assignments from ${child.name.split(' ')[0]}’s teachers will appear here.`} /></section>}
+              </div>
+            ))}
+          </div>
+        )}
+      </Shell>
+      <Toast toast={toast} onDismiss={dismiss} />
+    </>
+  )
+}
+

@@ -67,7 +67,8 @@ abstract class PersonController extends CenterScopedController
             $rules['email'] = [...$partial, 'required', 'email', 'max:255', Rule::unique('users')->ignore($person?->id)];
             $rules['password'] = [...($person ? ['sometimes'] : ['required']), 'string', 'min:8', 'max:255'];
         } else {
-            $rules['email'] = ['nullable', 'email', 'max:255', Rule::unique('users')->ignore($person?->id)];
+            $rules['email'] = ['nullable', 'email', 'max:255', 'not_regex:/@students\.aspire\.local$/i', Rule::unique('users')->ignore($person?->id)];
+            $rules['password'] = [$person ? 'sometimes' : 'required_with:email', 'nullable', 'string', 'min:8', 'max:255'];
         }
 
         return $rules + $this->extraRules($request, $centerId, $person);
@@ -98,7 +99,7 @@ abstract class PersonController extends CenterScopedController
             $attributes = collect($data)->only((new User)->getFillable())->all();
             if (! $this->canSignIn()) {
                 $attributes['email'] ??= 'stu-'.Str::lower(Str::random(12)).'@students.aspire.local';
-                $attributes['password'] = Str::random(40);
+                $attributes['password'] ??= Str::random(40);
             }
             $person = User::create($attributes + ['role' => $this->role(), 'center_id' => $centerId, 'active' => $data['active'] ?? true]);
             $person->update(['code' => $this->codePrefix().'-'.str_pad((string) $person->id, 5, '0', STR_PAD_LEFT)]);
@@ -125,6 +126,9 @@ abstract class PersonController extends CenterScopedController
         $data = $request->validate($this->rules($centerId, $person, $request));
         if (array_key_exists('email', $data) && $data['email'] === null) {
             unset($data['email']);
+        }
+        if (array_key_exists('password', $data) && $data['password'] === null) {
+            unset($data['password']);
         }
         DB::transaction(function () use ($request, $centerId, $person, $data): void {
             $person->update(collect($data)->only((new User)->getFillable())->except('code')->all());
