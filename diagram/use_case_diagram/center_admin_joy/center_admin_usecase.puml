@@ -1,0 +1,76 @@
+
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Center Admin" as Admin
+
+rectangle "ASPIRE - Center Admin System" {
+  usecase "Login" as UC1
+  usecase "View Dashboard" as UC2
+  usecase "View Center Statistics" as UC3
+  usecase "View Today's Classes" as UC4
+  usecase "View Administrative Alerts" as UC5
+
+  usecase "Manage Students" as UC6
+  usecase "Add Student" as UC7
+  usecase "View / Search Students" as UC8
+  usecase "Edit Student" as UC9
+  usecase "Delete Student" as UC10
+
+  usecase "Manage Parents" as UC11
+  usecase "Add / View / Edit Parents" as UC12
+  usecase "Delete Parent" as UC13
+  usecase "Link Guardian to Student" as UC14
+  usecase "Remove Guardian Link" as UC15
+
+  usecase "Manage Teachers" as UC16
+  usecase "Add / View / Edit Teachers" as UC17
+  usecase "Delete Teacher" as UC18
+
+  usecase "Manage Subjects" as UC19
+  usecase "Create / View / Edit Subjects" as UC20
+  usecase "Delete / Deactivate Subject" as UC21
+
+  usecase "Manage Classes" as UC22
+  usecase "Create / View / Edit Classes" as UC23
+  usecase "Assign Teachers" as UC24
+  usecase "Enroll Students" as UC25
+  usecase "Unenroll Students" as UC26
+  usecase "Delete / Deactivate Class" as UC27
+}
+
+Admin --> UC1
+Admin --> UC2
+Admin --> UC6
+Admin --> UC11
+Admin --> UC16
+Admin --> UC19
+Admin --> UC22
+
+UC2 .> UC3 : <<include>>
+UC2 .> UC4 : <<include>>
+UC2 .> UC5 : <<include>>
+
+UC6 .> UC7 : <<include>>
+UC6 .> UC8 : <<include>>
+UC6 .> UC9 : <<include>>
+UC6 .> UC10 : <<include>>
+UC6 .> UC14 : <<include>>
+UC6 .> UC15 : <<include>>
+
+UC11 .> UC12 : <<include>>
+UC11 .> UC13 : <<include>>
+
+UC16 .> UC17 : <<include>>
+UC16 .> UC18 : <<include>>
+
+UC19 .> UC20 : <<include>>
+UC19 .> UC21 : <<include>>
+
+UC22 .> UC23 : <<include>>
+UC22 .> UC24 : <<include>>
+UC22 .> UC25 : <<include>>
+UC22 .> UC26 : <<include>>
+UC22 .> UC27 : <<include>>
+@enduml
