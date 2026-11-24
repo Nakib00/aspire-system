@@ -1,0 +1,12 @@
+@startuml
+left to right direction
+
+actor "Center Admin"
+
+rectangle "ASPIRE Center Management System" as System
+
+"Center Admin" --> System : Login and management requests
+System --> "Center Admin" : Dashboard and records
+System --> "Center Admin" : Alerts and confirmations
+
+@enduml
