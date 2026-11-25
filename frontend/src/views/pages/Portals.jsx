@@ -216,4 +216,3 @@ export function ParentPortal({ session, onLogout }) {
     </>
   )
 }
-
