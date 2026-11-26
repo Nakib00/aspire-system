@@ -147,7 +147,7 @@ Run the automated checks once. They should all pass on a fresh clone.
 ```bash
 # backend
 cd backend
-php artisan test              # 27 tests should pass
+php artisan test              # 35 tests should pass
 vendor/bin/pint --test        # code style check
 
 # frontend

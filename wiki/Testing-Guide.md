@@ -4,8 +4,7 @@
 
 | Layer | Tool | Status |
 |-------|------|--------|
-| Backend API | PHPUnit 12 (Laravel feature tests) | **27 tests, 311 assertions, all passing** |
-| Backend units | PHPUnit `tests/Unit` | none yet (the folder exists) |
+| Backend API and units | PHPUnit 12 | **35 tests, 354 assertions, all passing** |
 | Frontend | none yet | `npm run lint` and `npm run build` are the only checks |
 | Continuous integration | GitHub Actions | workflow exists but is **not active**: it lives in `backend/.github/` and GitHub only reads the root `.github/workflows/` |
 | Coverage report | none | needs Xdebug or PCOV; see below |
@@ -22,22 +21,122 @@ php artisan test tests/Feature/TeacherWorkflowTest.php   # one file
 php artisan test --filter=test_attendance_can_be_taken_updated_and_reported   # one test
 ```
 
+### Run the Super Admin tests
+
+Run these commands from the repository root:
+
+```bash
+cd backend
+php artisan test --compact tests/Feature/SuperAdminAuthenticationTest.php tests/Feature/SuperAdminManagementTest.php
+```
+
+Run one Super Admin test method while learning or debugging:
+
+```bash
+php artisan test --compact --filter=test_valid_credentials_return_a_bearer_token_and_super_admin_details
+```
+
+Run the complete backend suite and check PHP formatting before a commit:
+
+```bash
+php artisan test --compact
+vendor/bin/pint --test
+```
+
+On Windows PowerShell, use `vendor\bin\pint.bat --test` if `vendor/bin/pint --test` is not recognized.
+
 Tests use an **in-memory SQLite** database (`phpunit.xml`: `DB_DATABASE=:memory:`), so they never touch your
 real data and are fast (about 2–12 seconds for all).
 
-## What the 27 tests cover
+## What the 35 tests cover
 
 | File | Tests | What is proven |
 |------|------:|----------------|
 | `AdminApiTest` | 7 | Login/logout, inactive users, expired JWT, Super Admin center and admin management, a Center Admin cannot reach Super Admin routes, deactivation and reassignment revoke old tokens, profile fields stored |
+| `SuperAdminAuthenticationTest` | 3 | Case-insensitive Super Admin login, JWT response data, login timestamp, required-field validation, and wrong-password rejection |
+| `SuperAdminManagementTest` | 5 | Center creation and generated code, alphabetical center listing, normalized Center Admin email, password-change token revocation, and rejecting non-Center-Admin records |
 | `CenterManagementTest` | 5 | Center Admin endpoints reachable only by Center Admins, teacher CRUD and login, data scoped to own center, students with new/existing guardians and the parent dashboard, subjects/classes/enrolment rules |
 | `StudentPortalTest` | 7 | Placeholder students cannot sign in, Center Admin can enable login, class stream and announcements, submit work and see only released results, late/missing work flagged, attendance summary, student portal is for students only |
 | `TeacherWorkflowTest` | 5 | Attendance take/update/report, teacher cannot touch other teachers' classes, assignment with questions/YouTube/files, review and grading flow, parent submits for own child only and only until graded |
 | `AnnouncementFeedTest` | 1 | Announcements visible only to enrolled students and their parents |
 | `ExampleTest` | 1 | Application boots |
+| `Unit/ExampleTest` | 1 | Basic PHPUnit unit-test setup works |
 
 The focus is **access control** (who may do what), **data isolation between centers**, and the
 **teacher → student → parent workflow**.
+
+## Super Admin tests explained
+
+These are Laravel **feature tests**, even though people often call all automated tests "unit tests." A
+feature test is correct here because it exercises the route, validation, controller, JWT authentication
+and database together, just like an API client.
+
+### Authentication tests
+
+| Test | Expected result | Why it matters |
+|------|-----------------|----------------|
+| Valid credentials | `200`, Bearer JWT and Super Admin profile | Proves a Super Admin without a center can sign in |
+| Uppercase email | Login succeeds and resolves the lowercase account | Proves login email matching is case-insensitive |
+| Successful login | `last_login_at` is saved | Proves the audit timestamp is updated |
+| Missing email/password | `422` with both validation errors | Proves invalid requests are explained to the client |
+| Wrong password | `401`; login time remains empty | Proves failed authentication does not change account state |
+
+### Management API tests
+
+| Test | Expected result | Why it matters |
+|------|-----------------|----------------|
+| Create center | `201`, saved row and generated `CTR-001` code | Checks both the JSON response and database |
+| List centers | `200`, names in alphabetical order | Proves the API's documented ordering |
+| Create Center Admin | `201`, role and center saved, email lowercased | Protects account consistency |
+| Change Center Admin password | Old JWT gets `401`; new password can log in | Proves a security-sensitive change revokes old sessions |
+| Request a teacher through Center Admin endpoint | `404` | Prevents the endpoint from exposing the wrong user type |
+
+### How one test works
+
+Every test uses **Arrange -> Act -> Assert**:
+
+```php
+// Arrange: create only the data required by this test.
+$superAdmin = User::factory()->create([
+    'email' => 'owner@example.com',
+    'password' => 'password123',
+    'role' => 'super_admin',
+    'active' => true,
+]);
+
+// Act: call the real login API.
+$response = $this->postJson('/api/v1/login', [
+    'email' => 'OWNER@EXAMPLE.COM',
+    'password' => 'password123',
+]);
+
+// Assert: check the observable API result.
+$response->assertOk()
+    ->assertJsonPath('token_type', 'Bearer')
+    ->assertJsonPath('user.role', 'super_admin');
+```
+
+`LazilyRefreshDatabase` gives the tests an isolated database. `phpunit.xml` sets that database to
+SQLite `:memory:`, so the records disappear after the test run and development data is never changed.
+
+## Latest verified result
+
+Verified on **27 November 2026**:
+
+```text
+Focused Super Admin suite
+8 tests passed, 43 assertions
+
+Complete backend suite
+35 tests passed, 354 assertions
+
+Laravel Pint formatting
+Passed
+```
+
+The focused run initially exposed a test expectation mismatch: Laravel's raw paginator puts `total` at
+the JSON root, not under `meta`. The assertion was corrected to match the API's real response, then both
+the focused and complete suites passed.
 
 ## Writing a good feature test
 
