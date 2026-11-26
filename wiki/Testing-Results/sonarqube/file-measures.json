@@ -1,0 +1,430 @@
+﻿{
+    "paging":  {
+                   "pageIndex":  1,
+                   "pageSize":  500,
+                   "total":  17
+               },
+    "baseComponent":  {
+                          "key":  "aspire-super-admin-login",
+                          "name":  "ASPIRE Super Admin and Login",
+                          "qualifier":  "TRK",
+                          "measures":  [
+
+                                       ]
+                      },
+    "components":  [
+                       {
+                           "key":  "aspire-super-admin-login:backend/tests/Feature/AdminApiTest.php",
+                           "name":  "AdminApiTest.php",
+                           "qualifier":  "UTS",
+                           "path":  "backend/tests/Feature/AdminApiTest.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "tests",
+                                                "value":  "7"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/models/api.js",
+                           "name":  "api.js",
+                           "qualifier":  "FIL",
+                           "path":  "frontend/src/models/api.js",
+                           "language":  "js",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "15"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "38"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/App.jsx",
+                           "name":  "App.jsx",
+                           "qualifier":  "FIL",
+                           "path":  "frontend/src/App.jsx",
+                           "language":  "js",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "3"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "21"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:backend/app/Http/Controllers/Api/AuthController.php",
+                           "name":  "AuthController.php",
+                           "qualifier":  "FIL",
+                           "path":  "backend/app/Http/Controllers/Api/AuthController.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "11"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "30"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:backend/app/Http/Middleware/AuthenticateApiToken.php",
+                           "name":  "AuthenticateApiToken.php",
+                           "qualifier":  "FIL",
+                           "path":  "backend/app/Http/Middleware/AuthenticateApiToken.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "11"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "29"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:backend/app/Models/Center.php",
+                           "name":  "Center.php",
+                           "qualifier":  "FIL",
+                           "path":  "backend/app/Models/Center.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "5"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "31"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:backend/app/Http/Controllers/Api/CenterAdminController.php",
+                           "name":  "CenterAdminController.php",
+                           "qualifier":  "FIL",
+                           "path":  "backend/app/Http/Controllers/Api/CenterAdminController.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "16"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "83"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:backend/app/Http/Controllers/Api/CenterController.php",
+                           "name":  "CenterController.php",
+                           "qualifier":  "FIL",
+                           "path":  "backend/app/Http/Controllers/Api/CenterController.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "13"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "71"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/views/pages/Forms.jsx",
+                           "name":  "Forms.jsx",
+                           "qualifier":  "FIL",
+                           "path":  "frontend/src/views/pages/Forms.jsx",
+                           "language":  "js",
+                           "measures":  [
+                                            {
+                                                "metric":  "bugs",
+                                                "value":  "2",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "71"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "172"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/views/pages/Login.jsx",
+                           "name":  "Login.jsx",
+                           "qualifier":  "FIL",
+                           "path":  "frontend/src/views/pages/Login.jsx",
+                           "language":  "js",
+                           "measures":  [
+                                            {
+                                                "metric":  "branch_coverage",
+                                                "value":  "100.0",
+                                                "bestValue":  true
+                                            },
+                                            {
+                                                "metric":  "bugs",
+                                                "value":  "1",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "code_smells",
+                                                "value":  "1",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "11"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "100.0",
+                                                "bestValue":  true
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "100.0",
+                                                "bestValue":  true
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "75"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/views/pages/Login.test.jsx",
+                           "name":  "Login.test.jsx",
+                           "qualifier":  "UTS",
+                           "path":  "frontend/src/views/pages/Login.test.jsx",
+                           "language":  "js",
+                           "measures":  [
+
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/views/pages/SuperAdmin.jsx",
+                           "name":  "SuperAdmin.jsx",
+                           "qualifier":  "FIL",
+                           "path":  "frontend/src/views/pages/SuperAdmin.jsx",
+                           "language":  "js",
+                           "measures":  [
+                                            {
+                                                "metric":  "branch_coverage",
+                                                "value":  "41.8",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "bugs",
+                                                "value":  "1",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "151"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "48.4",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "57.5",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "254"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/views/pages/SuperAdmin.test.jsx",
+                           "name":  "SuperAdmin.test.jsx",
+                           "qualifier":  "UTS",
+                           "path":  "frontend/src/views/pages/SuperAdmin.test.jsx",
+                           "language":  "js",
+                           "measures":  [
+
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:backend/tests/Feature/SuperAdminAuthenticationTest.php",
+                           "name":  "SuperAdminAuthenticationTest.php",
+                           "qualifier":  "UTS",
+                           "path":  "backend/tests/Feature/SuperAdminAuthenticationTest.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "tests",
+                                                "value":  "3"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:backend/tests/Feature/SuperAdminManagementTest.php",
+                           "name":  "SuperAdminManagementTest.php",
+                           "qualifier":  "UTS",
+                           "path":  "backend/tests/Feature/SuperAdminManagementTest.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "tests",
+                                                "value":  "5"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:backend/app/Models/User.php",
+                           "name":  "User.php",
+                           "qualifier":  "FIL",
+                           "path":  "backend/app/Models/User.php",
+                           "language":  "php",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "8"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "55"
+                                            }
+                                        ]
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/controllers/useSession.js",
+                           "name":  "useSession.js",
+                           "qualifier":  "FIL",
+                           "path":  "frontend/src/controllers/useSession.js",
+                           "language":  "js",
+                           "measures":  [
+                                            {
+                                                "metric":  "complexity",
+                                                "value":  "7"
+                                            },
+                                            {
+                                                "metric":  "coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "line_coverage",
+                                                "value":  "0.0",
+                                                "bestValue":  false
+                                            },
+                                            {
+                                                "metric":  "ncloc",
+                                                "value":  "30"
+                                            }
+                                        ]
+                       }
+                   ]
+}

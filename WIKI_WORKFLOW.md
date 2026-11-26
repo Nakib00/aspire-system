@@ -26,6 +26,8 @@ git clone https://github.com/Nakib00/aspire-system.wiki.git ../aspire-wiki
 git switch main && git pull
 rm -rf ../aspire-wiki/*.md
 cp wiki/*.md ../aspire-wiki/
+rm -rf ../aspire-wiki/Testing-Results
+cp -r wiki/Testing-Results ../aspire-wiki/   # screenshots and raw test results used by Test-Results.md
 cd ../aspire-wiki
 git add -A
 git commit -m "docs: sync wiki from main"

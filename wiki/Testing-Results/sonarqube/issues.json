@@ -1,0 +1,321 @@
+﻿{
+    "total":  5,
+    "p":  1,
+    "ps":  500,
+    "paging":  {
+                   "pageIndex":  1,
+                   "pageSize":  500,
+                   "total":  5
+               },
+    "effortTotal":  16,
+    "issues":  [
+                   {
+                       "key":  "6641964b-c276-4b57-8b9d-8bb3fa563b8b",
+                       "rule":  "javascript:S9383",
+                       "severity":  "MAJOR",
+                       "component":  "aspire-super-admin-login:frontend/src/views/pages/SuperAdmin.jsx",
+                       "project":  "aspire-super-admin-login",
+                       "line":  248,
+                       "hash":  "46dd2ea7615ec89f5b3e5806da6211e0",
+                       "textRange":  {
+                                         "startLine":  248,
+                                         "endLine":  248,
+                                         "startOffset":  20,
+                                         "endOffset":  51
+                                     },
+                       "flows":  [
+
+                                 ],
+                       "status":  "OPEN",
+                       "message":  "Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator.",
+                       "effort":  "5min",
+                       "debt":  "5min",
+                       "author":  "redacted@example.invalid",
+                       "tags":  [
+                                    "async",
+                                    "es2017",
+                                    "type-dependent",
+                                    "promise"
+                                ],
+                       "creationDate":  "2026-11-17T02:34:32+0600",
+                       "updateDate":  "2026-11-27T03:35:20+0600",
+                       "type":  "BUG",
+                       "scope":  "MAIN",
+                       "quickFixAvailable":  true,
+                       "messageFormattings":  [
+
+                                              ],
+                       "codeVariants":  [
+
+                                        ],
+                       "cleanCodeAttribute":  "LOGICAL",
+                       "cleanCodeAttributeCategory":  "INTENTIONAL",
+                       "impacts":  [
+                                       {
+                                           "softwareQuality":  "RELIABILITY",
+                                           "severity":  "MEDIUM"
+                                       }
+                                   ],
+                       "issueStatus":  "OPEN",
+                       "prioritizedRule":  false,
+                       "fromSonarQubeUpdate":  false,
+                       "internalTags":  [
+
+                                        ],
+                       "linkedTicketStatus":  "NOT_LINKED"
+                   },
+                   {
+                       "key":  "46f1f337-02d7-44d9-af49-e84cee58942f",
+                       "rule":  "javascript:S9011",
+                       "severity":  "MAJOR",
+                       "component":  "aspire-super-admin-login:frontend/src/views/pages/Forms.jsx",
+                       "project":  "aspire-super-admin-login",
+                       "line":  110,
+                       "hash":  "7ddf3b68bbc18132f2b785c826e801bd",
+                       "textRange":  {
+                                         "startLine":  110,
+                                         "endLine":  110,
+                                         "startOffset":  10,
+                                         "endOffset":  133
+                                     },
+                       "flows":  [
+
+                                 ],
+                       "status":  "OPEN",
+                       "message":  "Add an explicit \"type\" attribute to this button.",
+                       "effort":  "2min",
+                       "debt":  "2min",
+                       "author":  "redacted@example.invalid",
+                       "tags":  [
+                                    "vue",
+                                    "react"
+                                ],
+                       "creationDate":  "2026-11-17T02:18:05+0600",
+                       "updateDate":  "2026-11-27T03:35:20+0600",
+                       "type":  "BUG",
+                       "scope":  "MAIN",
+                       "quickFixAvailable":  false,
+                       "messageFormattings":  [
+
+                                              ],
+                       "codeVariants":  [
+
+                                        ],
+                       "cleanCodeAttribute":  "LOGICAL",
+                       "cleanCodeAttributeCategory":  "INTENTIONAL",
+                       "impacts":  [
+                                       {
+                                           "softwareQuality":  "RELIABILITY",
+                                           "severity":  "MEDIUM"
+                                       }
+                                   ],
+                       "issueStatus":  "OPEN",
+                       "prioritizedRule":  false,
+                       "fromSonarQubeUpdate":  false,
+                       "internalTags":  [
+
+                                        ],
+                       "linkedTicketStatus":  "NOT_LINKED"
+                   },
+                   {
+                       "key":  "9196fd9a-834a-4061-830c-b6ac3fa6e8b5",
+                       "rule":  "javascript:S9011",
+                       "severity":  "MAJOR",
+                       "component":  "aspire-super-admin-login:frontend/src/views/pages/Forms.jsx",
+                       "project":  "aspire-super-admin-login",
+                       "line":  188,
+                       "hash":  "9023c72b7d8df7a5a3111ef9b2853990",
+                       "textRange":  {
+                                         "startLine":  188,
+                                         "endLine":  188,
+                                         "startOffset":  10,
+                                         "endOffset":  170
+                                     },
+                       "flows":  [
+
+                                 ],
+                       "status":  "OPEN",
+                       "message":  "Add an explicit \"type\" attribute to this button.",
+                       "effort":  "2min",
+                       "debt":  "2min",
+                       "author":  "redacted@example.invalid",
+                       "tags":  [
+                                    "vue",
+                                    "react"
+                                ],
+                       "creationDate":  "2026-11-17T02:18:05+0600",
+                       "updateDate":  "2026-11-27T03:35:20+0600",
+                       "type":  "BUG",
+                       "scope":  "MAIN",
+                       "quickFixAvailable":  false,
+                       "messageFormattings":  [
+
+                                              ],
+                       "codeVariants":  [
+
+                                        ],
+                       "cleanCodeAttribute":  "LOGICAL",
+                       "cleanCodeAttributeCategory":  "INTENTIONAL",
+                       "impacts":  [
+                                       {
+                                           "softwareQuality":  "RELIABILITY",
+                                           "severity":  "MEDIUM"
+                                       }
+                                   ],
+                       "issueStatus":  "OPEN",
+                       "prioritizedRule":  false,
+                       "fromSonarQubeUpdate":  false,
+                       "internalTags":  [
+
+                                        ],
+                       "linkedTicketStatus":  "NOT_LINKED"
+                   },
+                   {
+                       "key":  "db5296ed-8b9f-4c7e-a569-846e2a002db1",
+                       "rule":  "javascript:S9379",
+                       "severity":  "MAJOR",
+                       "component":  "aspire-super-admin-login:frontend/src/views/pages/Login.jsx",
+                       "project":  "aspire-super-admin-login",
+                       "line":  69,
+                       "hash":  "1c87961ffb57a3bb97cc27b6b4270ef3",
+                       "textRange":  {
+                                         "startLine":  69,
+                                         "endLine":  69,
+                                         "startOffset":  152,
+                                         "endOffset":  161
+                                     },
+                       "flows":  [
+
+                                 ],
+                       "status":  "OPEN",
+                       "message":  "Remove this \"autoFocus\" attribute, as it can reduce usability and accessibility for users.",
+                       "effort":  "5min",
+                       "debt":  "5min",
+                       "author":  "redacted@example.invalid",
+                       "tags":  [
+                                    "accessibility",
+                                    "react"
+                                ],
+                       "creationDate":  "2026-11-17T02:18:05+0600",
+                       "updateDate":  "2026-11-27T03:35:20+0600",
+                       "type":  "CODE_SMELL",
+                       "scope":  "MAIN",
+                       "quickFixAvailable":  false,
+                       "messageFormattings":  [
+
+                                              ],
+                       "codeVariants":  [
+
+                                        ],
+                       "cleanCodeAttribute":  "CONVENTIONAL",
+                       "cleanCodeAttributeCategory":  "CONSISTENT",
+                       "impacts":  [
+                                       {
+                                           "softwareQuality":  "MAINTAINABILITY",
+                                           "severity":  "LOW"
+                                       },
+                                       {
+                                           "softwareQuality":  "RELIABILITY",
+                                           "severity":  "MEDIUM"
+                                       }
+                                   ],
+                       "issueStatus":  "OPEN",
+                       "prioritizedRule":  false,
+                       "fromSonarQubeUpdate":  false,
+                       "internalTags":  [
+
+                                        ],
+                       "linkedTicketStatus":  "NOT_LINKED"
+                   },
+                   {
+                       "key":  "73e668c9-b3c2-4ca1-8b7a-e6b4c31f9a40",
+                       "rule":  "javascript:S9011",
+                       "severity":  "MAJOR",
+                       "component":  "aspire-super-admin-login:frontend/src/views/pages/Login.jsx",
+                       "project":  "aspire-super-admin-login",
+                       "line":  82,
+                       "hash":  "b140633cf02103535d04cfe942dc6f21",
+                       "textRange":  {
+                                         "startLine":  82,
+                                         "endLine":  82,
+                                         "startOffset":  10,
+                                         "endOffset":  157
+                                     },
+                       "flows":  [
+
+                                 ],
+                       "status":  "OPEN",
+                       "message":  "Add an explicit \"type\" attribute to this button.",
+                       "effort":  "2min",
+                       "debt":  "2min",
+                       "author":  "redacted@example.invalid",
+                       "tags":  [
+                                    "vue",
+                                    "react"
+                                ],
+                       "creationDate":  "2026-11-17T02:18:05+0600",
+                       "updateDate":  "2026-11-27T03:35:20+0600",
+                       "type":  "BUG",
+                       "scope":  "MAIN",
+                       "quickFixAvailable":  false,
+                       "messageFormattings":  [
+
+                                              ],
+                       "codeVariants":  [
+
+                                        ],
+                       "cleanCodeAttribute":  "LOGICAL",
+                       "cleanCodeAttributeCategory":  "INTENTIONAL",
+                       "impacts":  [
+                                       {
+                                           "softwareQuality":  "RELIABILITY",
+                                           "severity":  "MEDIUM"
+                                       }
+                                   ],
+                       "issueStatus":  "OPEN",
+                       "prioritizedRule":  false,
+                       "fromSonarQubeUpdate":  false,
+                       "internalTags":  [
+
+                                        ],
+                       "linkedTicketStatus":  "NOT_LINKED"
+                   }
+               ],
+    "components":  [
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/views/pages/Login.jsx",
+                           "enabled":  true,
+                           "qualifier":  "FIL",
+                           "name":  "Login.jsx",
+                           "longName":  "frontend/src/views/pages/Login.jsx",
+                           "path":  "frontend/src/views/pages/Login.jsx"
+                       },
+                       {
+                           "key":  "aspire-super-admin-login",
+                           "enabled":  true,
+                           "qualifier":  "TRK",
+                           "name":  "ASPIRE Super Admin and Login",
+                           "longName":  "ASPIRE Super Admin and Login"
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/views/pages/SuperAdmin.jsx",
+                           "enabled":  true,
+                           "qualifier":  "FIL",
+                           "name":  "SuperAdmin.jsx",
+                           "longName":  "frontend/src/views/pages/SuperAdmin.jsx",
+                           "path":  "frontend/src/views/pages/SuperAdmin.jsx"
+                       },
+                       {
+                           "key":  "aspire-super-admin-login:frontend/src/views/pages/Forms.jsx",
+                           "enabled":  true,
+                           "qualifier":  "FIL",
+                           "name":  "Forms.jsx",
+                           "longName":  "frontend/src/views/pages/Forms.jsx",
+                           "path":  "frontend/src/views/pages/Forms.jsx"
+                       }
+                   ],
+    "facets":  [
+
+               ]
+}
+

@@ -5,12 +5,17 @@
 | Layer | Tool | Status |
 |-------|------|--------|
 | Backend API and units | PHPUnit 12 | **35 tests, 354 assertions, all passing** |
-| Frontend | none yet | `npm run lint` and `npm run build` are the only checks |
+| Frontend | Vitest 5 + React Testing Library | **8 tests (3 Login, 5 Super Admin), all passing**; Login 100% lines, Super Admin 56.8% lines |
+| Static analysis | SonarQube Community Build | project `aspire-super-admin-login`; see [Testing Results](Test-Results) |
 | Continuous integration | GitHub Actions | workflow exists but is **not active**: it lives in `backend/.github/` and GitHub only reads the root `.github/workflows/` |
-| Coverage report | none | needs Xdebug or PCOV; see below |
+| Coverage report | frontend only (v8) | PHP coverage needs Xdebug or PCOV; see below |
+
+How to write the tests, and a walkthrough of the Login and Super Admin test code, is in
+[Writing Test Cases](Writing-Test-Cases). The latest run, screenshots and Sonar output are in
+[Testing Results](Test-Results).
 
 We prefer to be explicit about this: the tests are good at proving **permissions and workflows**; the
-gaps are unit tests, frontend tests and a coverage number.
+remaining gaps are wider frontend coverage and a measured coverage percentage.
 
 ## Running tests
 
@@ -132,6 +137,12 @@ Complete backend suite
 
 Laravel Pint formatting
 Passed
+
+Frontend Super Admin suite
+5 tests passed in 1 test file
+
+Frontend lint and production build
+Passed
 ```
 
 The focused run initially exposed a test expectation mismatch: Laravel's raw paginator puts `total` at
@@ -177,6 +188,44 @@ subject, class and one user per role.
 * Create only the data the test needs (use the factory, `UserFactory`).
 * Tests must not depend on each other or on order.
 * Do not use the demo seeder inside tests.
+
+## Frontend Super Admin tests
+
+The frontend suite uses Vitest, React Testing Library, `user-event` and jsdom. API functions are mocked,
+so these tests are fast, deterministic and do not need the Laravel server or a real database.
+
+Run all frontend tests from the repository root:
+
+```bash
+cd frontend
+npm test
+```
+
+Useful alternatives:
+
+```bash
+npm run test:watch                                      # rerun while editing
+npm test -- --run src/views/pages/SuperAdmin.test.jsx  # Super Admin file only
+npm run lint                                            # JavaScript quality check
+npm run build                                           # production build check
+```
+
+The eight tests prove that:
+
+| Test file | Test | What it proves |
+|-----------|------|----------------|
+| `Login.test.jsx` | Submit credentials | The form posts email and password to `/login` and passes the session to the app |
+| `Login.test.jsx` | Failed login | The API message is shown in an alert, no session is created, and the button is re-enabled |
+| `Login.test.jsx` | Show and hide password | The password field toggles between hidden and visible text |
+| `SuperAdmin.test.jsx` | Dashboard totals | Centers, administrators, capacity and attention items are calculated and shown |
+| `SuperAdmin.test.jsx` | Center search | Typing a center name hides non-matching rows |
+| `SuperAdmin.test.jsx` | Administrator safety rule | A new Center Admin cannot be created until an active center exists |
+| `SuperAdmin.test.jsx` | Expired JWT | A `401` API response signs the Super Admin out |
+| `SuperAdmin.test.jsx` | Loading failure | A clear error and **Try again** action are shown |
+
+The test files are `frontend/src/views/pages/Login.test.jsx` and `frontend/src/views/pages/SuperAdmin.test.jsx`.
+Shared DOM assertions and cleanup live in `frontend/src/test/setup.js`; the jsdom environment is
+configured in `frontend/vite.config.js`. Step-by-step explanation of this code: [Writing Test Cases](Writing-Test-Cases).
 
 ## Measuring coverage (optional)
 
