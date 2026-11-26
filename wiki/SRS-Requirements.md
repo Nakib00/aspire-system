@@ -71,7 +71,7 @@ Requirements for the other modules are captured in their use-case catalogues ([U
 | NFR-09 | Compatibility | Chrome, Firefox, Edge, Safari; responsive desktop/tablet/mobile. | 🟡 responsive ✅, cross-browser untested |
 | NFR-10 | Auditability | Audit history of attendance and result changes. | ⬜ table exists, not written |
 | NFR-11 | Privacy | Restrict student information, private feedback and issue reports by permission. | ✅ tested |
-| NFR-12 | Maintainability | Modular architecture, testable critical functions, error logging without sensitive data. | ✅ MVC, 27 tests |
+| NFR-12 | Maintainability | Modular architecture, testable critical functions, error logging without sensitive data. | ✅ MVC, 35 tests |
 | NFR-13 | Time accuracy | Consistent timestamps in the configured time zone; consistent deadline/late calculation. | ✅ `APP_TIMEZONE=Asia/Dhaka` |
 
 ## 5. Requirements for the other modules (summary)

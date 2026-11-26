@@ -1,0 +1,48 @@
+﻿[
+    {
+        "id":  "27d16383-e75f-4635-862e-a116f780295a",
+        "type":  "REPORT",
+        "componentId":  "5d475b6c-9d95-4c52-8a77-d0f53e75f3b9",
+        "componentKey":  "aspire-super-admin-login",
+        "componentName":  "ASPIRE Super Admin and Login",
+        "componentQualifier":  "TRK",
+        "analysisId":  "f0afb3b9-0438-4c3a-b787-040b4144a11a",
+        "status":  "SUCCESS",
+        "submittedAt":  "2026-11-27T03:38:59+0600",
+        "submitterLogin":  "admin",
+        "startedAt":  "2026-11-27T03:39:01+0600",
+        "executedAt":  "2026-11-27T03:39:03+0600",
+        "executionTimeMs":  2325,
+        "hasScannerContext":  true,
+        "warningCount":  1,
+        "warnings":  [
+                         "Missing blame information for 2 files. This may lead to some features not working correctly. Please check the analysis logs and refer to \u003ca href=\"https://docs.sonarsource.com/sonarqube-community-build/analyzing-source-code/scm-integration/\" rel=\"noopener noreferrer\" target=\"_blank\"\u003ethe documentation\u003c/a\u003e."
+                     ],
+        "infoMessages":  [
+
+                         ]
+    },
+    {
+        "id":  "2aacf50e-5845-4dd7-845c-ee09014ffa7d",
+        "type":  "REPORT",
+        "componentId":  "5d475b6c-9d95-4c52-8a77-d0f53e75f3b9",
+        "componentKey":  "aspire-super-admin-login",
+        "componentName":  "ASPIRE Super Admin and Login",
+        "componentQualifier":  "TRK",
+        "analysisId":  "750ff348-9c50-46fe-a56a-b271347a4e4e",
+        "status":  "SUCCESS",
+        "submittedAt":  "2026-11-27T03:35:45+0600",
+        "submitterLogin":  "admin",
+        "startedAt":  "2026-11-27T03:35:47+0600",
+        "executedAt":  "2026-11-27T03:35:50+0600",
+        "executionTimeMs":  3237,
+        "hasScannerContext":  true,
+        "warningCount":  1,
+        "warnings":  [
+                         "Missing blame information for 2 files. This may lead to some features not working correctly. Please check the analysis logs and refer to \u003ca href=\"https://docs.sonarsource.com/sonarqube-community-build/analyzing-source-code/scm-integration/\" rel=\"noopener noreferrer\" target=\"_blank\"\u003ethe documentation\u003c/a\u003e."
+                     ],
+        "infoMessages":  [
+
+                         ]
+    }
+]

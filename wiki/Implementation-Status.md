@@ -76,7 +76,7 @@ Legend: ✅ built and tested · 🟡 partly built · ⬜ designed only (no code 
 * **Continuous integration is not running.** The workflow files live in `backend/.github/workflows/`,
   but GitHub only runs workflows from the repository root `.github/workflows/`. Moving them there
   (and adding a frontend job) is an open task.
-* **Test coverage is not measured.** There are 27 feature tests but no coverage report; see [Testing Guide](Testing-Guide).
-* **No frontend tests** yet.
+* **Test coverage is not measured.** There are 34 feature tests and 1 unit test, but no coverage report; see [Testing Guide](Testing-Guide).
+* **Frontend tests currently cover only Login and the Super Admin workspace:** 8 Vitest/React Testing Library tests (Login 100% lines, Super Admin 56.8%); other roles still need frontend tests. SonarQube was run on this scope; see [Test Results](Test-Results).
 * `sections` has both `subject_id` and a text `subject` column that duplicates the subject's name;
   controllers keep them in sync. See [Database](Database). The `api_tokens` table is unused.

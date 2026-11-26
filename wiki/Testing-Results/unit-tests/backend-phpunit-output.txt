@@ -1,0 +1,30 @@
+﻿PHPUnit 12.5.44 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.5.1
+Configuration: E:\Ms.c\CSE451 - Software Engineering Concepts\Project\aspire\backend\phpunit.xml
+
+Time: 00:00.821, Memory: 58.00 MB
+
+[4mAdmin Api (Tests\Feature\AdminApi)[0m
+[32m ✔ [0mLogin logout and inactive users
+[32m ✔ [0mExpired jwt is rejected
+[32m ✔ [0mSuper admin can manage centers and center admins
+[32m ✔ [0mCenter admin cannot access super admin routes and deactivation revokes token
+[32m ✔ [0mRemoving and reassigning an admin invalidates old tokens
+[32m ✔ [0mCenter stores management details and generates code
+[32m ✔ [0mCenter admin stores phone and designation and login time
+
+[4mSuper Admin Authentication (Tests\Feature\SuperAdminAuthentication)[0m
+[32m ✔ [0mValid credentials return a bearer token and super admin details
+[32m ✔ [0mMissing login fields return 422 with validation errors
+[32m ✔ [0mWrong password returns 401 without updating last login time
+
+[4mSuper Admin Management (Tests\Feature\SuperAdminManagement)[0m
+[32m ✔ [0mSuper admin creates a center and returns 201
+[32m ✔ [0mSuper admin lists centers in alphabetical order
+[32m ✔ [0mSuper admin creates center admin with normalized email
+[32m ✔ [0mPassword change revokes a center admins old token
+[32m ✔ [0mCenter admin endpoint returns 404 for a non center admin user
+
+[30;42mOK (15 tests, 103 assertions)[0m
+{"tool":"phpunit","result":"passed","tests":15,"passed":15,"assertions":103,"duration_ms":822}

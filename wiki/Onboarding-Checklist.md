@@ -5,7 +5,7 @@ Tick these off in your first week. Each step links to the page that explains it.
 ## Day 1: run it
 
 - [ ] Install the tools and clone the repo ([Getting Started](Getting-Started))
-- [ ] Backend runs; `php artisan test` shows **27 passed**
+- [ ] Backend runs; `php artisan test` shows **35 passed**
 - [ ] Frontend runs; you can sign in as each demo role
 - [ ] You clicked through every role's screens once
 - [ ] Read [Project Overview](Project-Overview) and [Implementation Status](Implementation-Status)

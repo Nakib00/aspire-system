@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="8" failures="0" errors="0" time="2.6636676">
+    <testsuite name="src/views/pages/Login.test.jsx" timestamp="2026-11-26T21:11:34.365Z" hostname="DESKTOP-5903S8A" tests="3" failures="0" errors="0" skipped="0" time="1.7404538">
+        <testcase classname="src/views/pages/Login.test.jsx" name="Login page &gt; submits the credentials and returns the authenticated Super Admin session" time="0.874514">
+        </testcase>
+        <testcase classname="src/views/pages/Login.test.jsx" name="Login page &gt; shows the API error and does not create a session when login fails" time="0.7441004">
+        </testcase>
+        <testcase classname="src/views/pages/Login.test.jsx" name="Login page &gt; lets the user show and hide the password" time="0.1190405">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/pages/SuperAdmin.test.jsx" timestamp="2026-11-26T21:11:34.368Z" hostname="DESKTOP-5903S8A" tests="5" failures="0" errors="0" skipped="0" time="0.9232138">
+        <testcase classname="src/views/pages/SuperAdmin.test.jsx" name="Super Admin workspace &gt; shows the Super Admin dashboard totals and attention items" time="0.1988412">
+        </testcase>
+        <testcase classname="src/views/pages/SuperAdmin.test.jsx" name="Super Admin workspace &gt; searches the center list by name" time="0.3562715">
+        </testcase>
+        <testcase classname="src/views/pages/SuperAdmin.test.jsx" name="Super Admin workspace &gt; prevents creating an administrator when no active center exists" time="0.3078389">
+        </testcase>
+        <testcase classname="src/views/pages/SuperAdmin.test.jsx" name="Super Admin workspace &gt; signs out when the API rejects the token with 401" time="0.0257585">
+        </testcase>
+        <testcase classname="src/views/pages/SuperAdmin.test.jsx" name="Super Admin workspace &gt; shows a retryable error when loading fails" time="0.0326939">
+        </testcase>
+    </testsuite>
+</testsuites>

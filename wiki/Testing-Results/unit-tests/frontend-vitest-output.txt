@@ -1,0 +1,33 @@
+﻿
+ RUN  v5.1.2 E:/Ms.c/CSE451 - Software Engineering Concepts/Project/aspire/frontend
+      Coverage enabled with v8
+
+ ✓ src/views/pages/SuperAdmin.test.jsx > Super Admin workspace > shows the Super Admin dashboard totals and attention items 199ms
+ ✓ src/views/pages/SuperAdmin.test.jsx > Super Admin workspace > searches the center list by name 356ms
+ ✓ src/views/pages/SuperAdmin.test.jsx > Super Admin workspace > prevents creating an administrator when no active center exists 308ms
+ ✓ src/views/pages/SuperAdmin.test.jsx > Super Admin workspace > signs out when the API rejects the token with 401 26ms
+ ✓ src/views/pages/SuperAdmin.test.jsx > Super Admin workspace > shows a retryable error when loading fails 33ms
+ ✓ src/views/pages/Login.test.jsx > Login page > submits the credentials and returns the authenticated Super Admin session 875ms
+ ✓ src/views/pages/Login.test.jsx > Login page > shows the API error and does not create a session when login fails 744ms
+ ✓ src/views/pages/Login.test.jsx > Login page > lets the user show and hide the password 119ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  03:11:31
+   Duration  2.97s (tests 57%, environment 32%, setup 7%, import 3%, worker 1%, transform 1%)
+
+JUNIT report written to E:/Ms.c/CSE451 - Software Engineering Concepts/Project/aspire/wiki/Testing-Results/unit-tests/frontend-junit.xml
+ % Coverage report from v8
+----------------|---------|----------|---------|---------|----------------------
+File            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s    
+----------------|---------|----------|---------|---------|----------------------
+All files       |   63.01 |    45.14 |   47.94 |   64.34 |                      
+ SuperAdmin.jsx |   57.14 |    41.81 |   43.28 |   56.84 | ...3-272,283,296-298 
+----------------|---------|----------|---------|---------|----------------------
+
+=============================== Coverage summary ===============================
+Statements   : 63.01% ( 92/146 )
+Branches     : 45.14% ( 79/175 )
+Functions    : 47.94% ( 35/73 )
+Lines        : 64.34% ( 74/115 )
+================================================================================

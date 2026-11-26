@@ -1,0 +1,134 @@
+﻿03:38:42.838 INFO  Scanner configuration file: C:\Users\User\sonar-tools\sonar-scanner-8.5.0.16571-windows-x64\bin\..\conf\sonar-scanner.properties
+03:38:42.840 INFO  Project root configuration file: E:\Ms.c\CSE451 - Software Engineering Concepts\Project\aspire\sonar-project.properties
+03:38:42.850 INFO  SonarScanner CLI 8.5.0.16571
+03:38:42.853 INFO  Windows 11 10.0 amd64
+03:38:45.002 INFO  Communicating with SonarQube Community Build 26.11.0.134175
+03:38:45.003 INFO  JRE provisioning: os[windows], arch[amd64]
+03:38:45.326 INFO  Starting SonarScanner Engine...
+03:38:45.326 INFO  Java 21.0.13 Eclipse Adoptium (64-bit)
+03:38:47.407 INFO  Load global settings
+03:38:47.516 INFO  Load global settings (done) | time=108ms
+03:38:47.518 INFO  Server id: 147B411E-AaIZxzF-v0KwnpfEDphN
+03:38:47.764 INFO  Loading required plugins
+03:38:47.765 INFO  Load plugins index
+03:38:47.781 INFO  Load plugins index (done) | time=13ms
+03:38:47.782 INFO  Load/download plugins
+03:38:47.789 INFO  Load/download plugins (done) | time=7ms
+03:38:48.032 INFO  Load project settings for component key: 'aspire-super-admin-login'
+03:38:48.046 INFO  Load project settings for component key: 'aspire-super-admin-login' (done) | time=13ms
+03:38:48.057 INFO  Process project properties
+03:38:48.070 INFO  Process project properties (done) | time=13ms
+03:38:48.079 INFO  Project key: aspire-super-admin-login
+03:38:48.079 INFO  Base dir: E:\Ms.c\CSE451 - Software Engineering Concepts\Project\aspire
+03:38:48.079 INFO  Working dir: E:\Ms.c\CSE451 - Software Engineering Concepts\Project\aspire\.scannerwork
+03:38:48.218 INFO  Load quality profiles
+03:38:48.261 INFO  Load quality profiles (done) | time=43ms
+03:38:48.275 INFO  Exclusions based on SCM info is disabled by configuration
+03:38:48.283 INFO  Load active rules
+03:38:48.518 INFO  Load active rules (done) | time=236ms
+03:38:48.523 INFO  Load analysis cache
+03:38:48.536 INFO  Load analysis cache | time=14ms
+03:38:48.593 INFO  Preprocessing files...
+03:38:48.641 INFO  2 languages detected in 17 preprocessed files (done) | time=47ms
+03:38:48.641 INFO  51 files ignored because of inclusion/exclusion patterns
+03:38:48.642 INFO  15 directories skipped because of exclusion patterns (content not counted)
+03:38:48.643 INFO  Loading plugins for detected languages
+03:38:48.643 INFO  Load/download plugins
+03:38:48.650 INFO  Load/download plugins (done) | time=7ms
+03:38:48.796 INFO  Load project repositories
+03:38:48.940 INFO  Load project repositories (done) | time=143ms
+03:38:48.966 INFO  Indexing files...
+03:38:48.967 INFO  Project configuration:
+03:38:48.967 INFO    Included sources: backend/app/Http/Controllers/Api/AuthController.php, backend/app/Http/Controllers/Api/CenterController.php, backend/app/Http/Controllers/Api/CenterAdminController.php, backend/app/Http/Middleware/AuthenticateApiToken.php, backend/app/Models/User.php, backend/app/Models/Center.php, frontend/src/App.jsx, frontend/src/controllers/useSession.js, frontend/src/models/api.js, frontend/src/views/pages/Login.jsx, frontend/src/views/pages/SuperAdmin.jsx, frontend/src/views/pages/Forms.jsx
+03:38:48.967 INFO    Excluded sources: backend/tests/Feature/AdminApiTest.php, backend/tests/Feature/SuperAdminAuthenticationTest.php, backend/tests/Feature/SuperAdminManagementTest.php, frontend/src/views/pages/Login.test.jsx, frontend/src/views/pages/SuperAdmin.test.jsx
+03:38:48.968 INFO    Included tests: backend/tests/Feature/AdminApiTest.php, backend/tests/Feature/SuperAdminAuthenticationTest.php, backend/tests/Feature/SuperAdminManagementTest.php, frontend/src/views/pages/Login.test.jsx, frontend/src/views/pages/SuperAdmin.test.jsx
+03:38:49.005 INFO  17 files indexed (done) | time=39ms
+03:38:49.007 INFO  Quality profile for js: Sonar way core
+03:38:49.007 INFO  Quality profile for php: Sonar way core
+03:38:49.007 INFO  ------------- Run sensors on module ASPIRE Super Admin and Login
+03:38:49.049 INFO  Load metrics repository
+03:38:49.068 INFO  Load metrics repository (done) | time=19ms
+03:38:49.491 INFO  Reflections took 74 ms to scan 1 urls, producing 30 keys and 313 values
+03:38:49.576 INFO  Sensor IaC YAML File Type Classification Sensor [iac]
+03:38:49.578 INFO  Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=1ms
+03:38:49.579 INFO  Sensor PHP sensor [php]
+03:38:49.642 INFO  Starting PHP symbol indexer
+03:38:49.645 INFO  9 source files to be analyzed
+03:38:49.850 INFO  9/9 source files have been analyzed
+03:38:49.850 INFO  Cached information of global symbols will be used for 0 out of 9 files. Global symbols were recomputed for the remaining files.
+03:38:49.872 INFO  Starting PHP rules
+03:38:49.872 INFO  9 source files to be analyzed
+03:38:50.155 INFO  9/9 source files have been analyzed
+03:38:50.156 INFO  The PHP analyzer was able to leverage cached data from previous analyses for 0 out of 9 files. These files were not parsed.
+03:38:50.156 INFO  Sensor PHP sensor [php] (done) | time=577ms
+03:38:50.156 INFO  Sensor Analyzer for "php.ini" files [php]
+03:38:50.157 INFO  Sensor Analyzer for "php.ini" files [php] (done) | time=2ms
+03:38:50.157 INFO  Sensor PHPUnit report sensor [php]
+03:38:50.159 INFO  Importing E:\Ms.c\CSE451 - Software Engineering Concepts\Project\aspire\wiki\Testing-Results\unit-tests\backend-junit.xml
+03:38:50.189 INFO  No PHPUnit coverage reports provided (see 'sonar.php.coverage.reportPaths' property)
+03:38:50.190 INFO  Sensor PHPUnit report sensor [php] (done) | time=31ms
+03:38:50.190 INFO  Sensor IaC hadolint report Sensor [iac]
+03:38:50.190 INFO  Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+03:38:50.190 INFO  Sensor Java Config Sensor [iac]
+03:38:50.190 INFO  There are no files to be analyzed for the Java language
+03:38:50.190 INFO  Sensor Java Config Sensor [iac] (done) | time=1ms
+03:38:50.190 INFO  Sensor IaC Docker Sensor [iac]
+03:38:50.193 INFO  There are no files to be analyzed for the Docker language
+03:38:50.193 INFO  Sensor IaC Docker Sensor [iac] (done) | time=2ms
+03:38:50.193 INFO  Sensor HTML [web]
+03:38:50.251 INFO  Sensor HTML [web] (done) | time=57ms
+03:38:50.251 INFO  Sensor JavaScript/TypeScript Coverage [javascript]
+03:38:50.251 INFO  Analysing [E:\Ms.c\CSE451 - Software Engineering Concepts\Project\aspire\frontend\coverage\lcov.info]
+03:38:50.277 INFO  Sensor JavaScript/TypeScript Coverage [javascript] (done) | time=26ms
+03:38:50.278 INFO  Sensor TextAndSecretsSensor [text]
+03:38:50.299 INFO  Available processors: 12
+03:38:50.299 INFO  Using 12 threads for analysis.
+03:38:50.560 INFO  Start fetching files for the text and secrets analysis
+03:38:50.675 INFO  Using Git CLI to retrieve dirty files
+03:38:50.719 INFO  Retrieving language associated files and files included via "sonar.text.inclusions" that are tracked by git
+03:38:50.720 INFO  Starting the text and secrets analysis
+03:38:50.722 INFO  17 source files to be analyzed for the text and secrets analysis
+03:38:50.793 INFO  17/17 source files have been analyzed for the text and secrets analysis
+03:38:50.795 INFO  Sensor TextAndSecretsSensor [text] (done) | time=517ms
+03:38:50.797 INFO  ------------- Run sensors on project
+03:38:50.953 INFO  Sensor JavaScript/TypeScript/CSS analysis [javascript]
+03:38:51.327 INFO  Detected os: Windows 11 arch: amd64 alpine: false. Platform: WIN_X64
+03:38:51.327 INFO  Deploy location C:\Users\User\.sonar\js\node-runtime, tagetRuntime: C:\Users\User\.sonar\js\node-runtime\node.exe,  version: C:\Users\User\.sonar\js\node-runtime\version.txt
+03:38:51.366 INFO  Using embedded Node.js runtime.
+03:38:51.366 INFO  Using Node.js executable: 'C:\Users\User\.sonar\js\node-runtime\node.exe'.
+03:38:55.836 INFO  Memory configuration: OS (32541 MB), Node.js (4288 MB).
+03:38:55.847 INFO  gRPC analyze-project server listening on 127.0.0.1:51997
+03:38:55.956 INFO  Plugin version: [14.3.0.46350]
+03:38:59.151 INFO  Found 0 tsconfig.json file(s): []
+03:38:59.151 INFO  8 source files to be analyzed
+03:38:59.151 INFO  Analyzing 8 file(s) using default options [lib: lib.esnext.d.ts, lib.dom.d.ts]
+03:38:59.152 INFO  8/8 source files have been analyzed
+03:38:59.165 INFO  Hit the cache for 0 out of 8
+03:38:59.165 INFO  Miss the cache for 8 out of 8: ANALYSIS_MODE_INELIGIBLE [8/8]
+03:38:59.165 INFO  Sensor JavaScript/TypeScript/CSS analysis [javascript] (done) | time=8211ms
+03:38:59.165 INFO  Sensor IaC Project Sensor [iac]
+03:38:59.167 INFO  Sensor IaC Project Sensor [iac] (done) | time=1ms
+03:38:59.167 INFO  Sensor Zero Coverage Sensor
+03:38:59.172 INFO  Sensor Zero Coverage Sensor (done) | time=6ms
+03:38:59.173 INFO  ------------- Gather SCA dependencies on project
+03:38:59.177 INFO  Dependency analysis skipped
+03:38:59.184 INFO  SCM Publisher SCM provider for this project is: git
+03:38:59.185 INFO  SCM Publisher 2 source files to be analyzed
+03:38:59.366 INFO  SCM Publisher 0/2 source files have been analyzed (done) | time=180ms
+03:38:59.366 WARN  Missing blame information for the following files:
+03:38:59.366 WARN    * frontend/src/views/pages/Login.test.jsx
+03:38:59.367 WARN    * frontend/src/views/pages/SuperAdmin.test.jsx
+03:38:59.367 WARN  This may lead to missing/broken features in SonarQube
+03:38:59.373 INFO  CPD Executor Calculating CPD for 12 files
+03:38:59.396 INFO  CPD Executor CPD calculation finished (done) | time=15ms
+03:38:59.402 INFO  SCM revision ID '0e0a0c9c1426d6749e3212754bfde48486ccd8a7'
+03:38:59.482 INFO  Analysis report generated in 81ms, dir size=350.0 kB
+03:38:59.791 INFO  Analysis report compressed in 308ms, zip size=145.2 kB
+03:38:59.857 INFO  Analysis report uploaded in 66ms
+03:38:59.859 INFO  ANALYSIS SUCCESSFUL, you can find the results at: http://localhost:9000/dashboard?id=aspire-super-admin-login
+03:38:59.860 INFO  Note that you will be able to access the updated dashboard once the server has processed the submitted analysis report
+03:38:59.860 INFO  More about the report processing at http://localhost:9000/api/ce/task?id=27d16383-e75f-4635-862e-a116f780295a
+03:39:00.181 INFO  Analysis total time: 14.824 s
+03:39:00.217 INFO  SonarScanner Engine completed successfully
+03:39:00.262 INFO  EXECUTION SUCCESS
+03:39:00.262 INFO  Total time: 17.426s
