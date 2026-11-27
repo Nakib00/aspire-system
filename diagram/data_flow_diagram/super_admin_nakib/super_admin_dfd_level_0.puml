@@ -1,0 +1,128 @@
+﻿@startuml
+left to right direction
+skinparam shadowing false
+skinparam linetype polyline
+skinparam nodesep 90
+skinparam ranksep 130
+skinparam defaultFontSize 16
+skinparam ArrowFontSize 13
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam usecaseBackgroundColor #E0F2FE
+skinparam usecaseBorderColor #0369A1
+skinparam databaseBackgroundColor #FEF3C7
+skinparam databaseBorderColor #92400E
+
+title Aspire Super Admin DFD Level 0 - Authentication
+rectangle "Super Admin" as actor_in
+ database "D1: Users" as users_in
+usecase "1.0\nAuthenticate user" as process
+rectangle "Super Admin" as actor_out
+database "D1: Users" as users_out
+actor_in --> process : Email and password;\nsign-out request
+users_in --> process : Account and\ncredential data
+process --> actor_out : Token and user details;\nauthentication result
+process --> users_out : Last login time
+legend bottom
+  Repeated symbols represent the same actor or data store.
+endlegend
+
+@enduml
+
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam linetype polyline
+skinparam nodesep 90
+skinparam ranksep 130
+skinparam defaultFontSize 16
+skinparam ArrowFontSize 13
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam usecaseBackgroundColor #E0F2FE
+skinparam usecaseBorderColor #0369A1
+skinparam databaseBackgroundColor #FEF3C7
+skinparam databaseBorderColor #92400E
+
+title Aspire Super Admin DFD Level 0 - Center Management
+rectangle "Super Admin" as actor_in
+database "D2: Centers" as centers_in
+database "D1: Users" as users_in
+usecase "2.0\nManage centers" as process
+rectangle "Super Admin" as actor_out
+database "D2: Centers" as centers_out
+actor_in --> process : Center data;\nlist request
+centers_in --> process : Center records
+users_in --> process : Administrator counts
+process --> actor_out : Center records;\nsave result
+process --> centers_out : New or updated\ncenter data
+legend bottom
+  Repeated symbols represent the same actor or data store.
+endlegend
+
+@enduml
+
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam linetype polyline
+skinparam nodesep 90
+skinparam ranksep 130
+skinparam defaultFontSize 16
+skinparam ArrowFontSize 13
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam usecaseBackgroundColor #E0F2FE
+skinparam usecaseBorderColor #0369A1
+skinparam databaseBackgroundColor #FEF3C7
+skinparam databaseBorderColor #92400E
+
+title Aspire Super Admin DFD Level 0 - Administrator Management
+rectangle "Super Admin" as actor_in
+database "D1: Users" as users_in
+database "D2: Centers" as centers_in
+usecase "3.0\nManage center\nadministrators" as process
+rectangle "Super Admin" as actor_out
+database "D1: Users" as users_out
+actor_in --> process : Administrator details;\nassignment; list request
+users_in --> process : Administrator records
+centers_in --> process : Center details and status
+process --> actor_out : Administrator records;\nsave result
+process --> users_out : Account and assignment updates;\ntoken version
+legend bottom
+  Repeated symbols represent the same actor or data store.
+endlegend
+
+@enduml
+
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam linetype polyline
+skinparam nodesep 90
+skinparam ranksep 130
+skinparam defaultFontSize 16
+skinparam ArrowFontSize 13
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam usecaseBackgroundColor #E0F2FE
+skinparam usecaseBorderColor #0369A1
+skinparam databaseBackgroundColor #FEF3C7
+skinparam databaseBorderColor #92400E
+
+title Aspire Super Admin DFD Level 0 - Overview
+rectangle "Super Admin" as actor_in
+database "D1: Users" as users_in
+database "D2: Centers" as centers_in
+usecase "4.0\nDisplay overview" as process
+rectangle "Super Admin" as actor_out
+actor_in --> process : Overview request
+users_in --> process : Administrator records
+centers_in --> process : Center records
+process --> actor_out : Totals, recent centers\nand attention items
+legend bottom
+  The frontend calculates the overview from the retrieved lists.
+  Both Super Admin symbols represent the same actor.
+endlegend
+@enduml
+

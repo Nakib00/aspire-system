@@ -1,0 +1,57 @@
+﻿@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title Aspire - Super Admin Use Case Diagram
+actor "Super Admin" as SA
+
+rectangle "Aspire System" {
+  usecase "Sign in" as Login
+  usecase "Validate credentials\nand account status" as Validate
+  usecase "Issue bearer token" as Token
+  usecase "Sign out" as Logout
+  usecase "View overview and\nattention items" as Overview
+  usecase "View, search and\nfilter centers" as Centers
+  usecase "View center details" as CenterDetails
+  usecase "Add center" as AddCenter
+  usecase "Edit center" as EditCenter
+  usecase "Activate / deactivate\ncenter" as CenterStatus
+  usecase "View, search and filter\ncenter administrators" as Admins
+  usecase "Add center administrator" as AddAdmin
+  usecase "Edit administrator details\nand access" as EditAdmin
+  usecase "Assign / change\nadministrator's center" as Assign
+  usecase "Unassign administrator\nfrom center" as Unassign
+}
+
+SA --> Login
+SA --> Logout
+SA --> Overview
+SA --> Centers
+SA --> CenterDetails
+SA --> AddCenter
+SA --> EditCenter
+SA --> CenterStatus
+SA --> Admins
+SA --> AddAdmin
+SA --> EditAdmin
+SA --> Assign
+SA --> Unassign
+Login ..> Validate : <<include>>
+Login ..> Token : <<include>>
+
+note right of Login
+  Email and password are required.
+  Successful sign-in requires an active
+  super admin account. Login is limited
+  to 5 attempts per minute.
+end note
+note bottom of Overview
+  All management use cases require a valid
+  bearer token and the super_admin role.
+end note
+note bottom of Assign
+  Assignment is made when adding or editing
+  an administrator and requires an active center.
+end note
+@enduml

@@ -9,13 +9,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
+/**
+ * Super Admin management of Center Admin accounts and their center assignment.
+ *
+ * Only users with the `super_admin` role may call these endpoints.
+ */
 class CenterAdminController extends Controller
 {
+    /** Abort with 403 unless the signed-in user is a Super Admin. */
     private function authorizeAdmin(Request $request): void
     {
         abort_unless($request->user()->role === 'super_admin', 403);
     }
 
+    /** Ensure the bound user really is a Center Admin (404 otherwise). */
     private function centerAdmin(User $centerAdmin): User
     {
         abort_unless($centerAdmin->role === 'center_admin', 404);
@@ -23,6 +30,11 @@ class CenterAdminController extends Controller
         return $centerAdmin;
     }
 
+    /**
+     * List center administrators.
+     *
+     * GET /api/v1/center-admins
+     */
     public function index(Request $request): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -30,6 +42,11 @@ class CenterAdminController extends Controller
         return response()->json(User::where('role', 'center_admin')->with('center')->orderBy('name')->paginate(20));
     }
 
+    /**
+     * Create a center administrator.
+     *
+     * POST /api/v1/center-admins
+     */
     public function store(Request $request): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -49,6 +66,11 @@ class CenterAdminController extends Controller
         return response()->json(['data' => $admin->load('center')], 201);
     }
 
+    /**
+     * Show one center administrator.
+     *
+     * GET /api/v1/center-admins/{id}
+     */
     public function show(Request $request, User $centerAdmin): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -56,6 +78,11 @@ class CenterAdminController extends Controller
         return response()->json(['data' => $this->centerAdmin($centerAdmin)->load('center')]);
     }
 
+    /**
+     * Update a center administrator.
+     *
+     * PUT|PATCH /api/v1/center-admins/{id}
+     */
     public function update(Request $request, User $centerAdmin): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -83,6 +110,11 @@ class CenterAdminController extends Controller
         return response()->json(['data' => $centerAdmin->fresh()->load('center')]);
     }
 
+    /**
+     * Unassign a Center Admin from their center and revoke their tokens.
+     *
+     * DELETE /api/v1/center-admins/{centerAdmin}/center
+     */
     public function removeCenter(Request $request, User $centerAdmin): JsonResponse
     {
         $this->authorizeAdmin($request);
